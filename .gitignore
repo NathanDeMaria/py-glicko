@@ -1,0 +1,14 @@
+# Python build
+.eggs/
+*.egg-info/
+*.pyc
+
+# IDE/dev env
+.dmypy.json
+.idea/
+.mypy_cache/
+venv/
+
+# Datas
+data/
+*.csv
