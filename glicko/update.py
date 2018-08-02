@@ -21,6 +21,8 @@ def update_rating(rating: Rating,
     :param opponent_results: ``(n, 3)`` array of means, variances, and scores.
     :return: updated player rating and discrepancy
     """
+    if opponent_results.shape[0] == 0:
+        return rating, 0
     team_mean, team_variance = rating
     opponent_means, opponent_variances, scores = opponent_results.T
     g_opp = _g(opponent_variances)

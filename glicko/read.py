@@ -9,7 +9,6 @@ def read_csv(csv_path: str) -> League:
     with open(csv_path) as f:
         csv_read = DictReader(f)
         games = []
-        # TODO: decide if I want the .csv to have teams on both sides
         for row in csv_read:
             round_num = int(row['week'])
             assert round_num > 0
@@ -23,16 +22,6 @@ def read_csv(csv_path: str) -> League:
                 round=round_num,
                 date=date,
                 # TODO: fix little NFL-specific things
-                group='NFL'
-            ))
-            games.append(Game(
-                team=row['opponent'],
-                opponent=row['team'],
-                team_score=float(row['opponent_score']),
-                opponent_score=float(row['score']),
-                season=int(row['season']),
-                round=round_num,
-                date=date,
                 group='NFL'
             ))
 
