@@ -33,6 +33,9 @@ class Team:
         previous_season = self._ratings[max(seasons_before)]
         return previous_season[max(previous_season.keys())]
 
+    def get_rating_on(self, season: int, iteration: int) -> Rating:
+        return self._ratings[season][iteration]
+
     @property
     def rating(self) -> Rating:
         season_num = max(self._ratings.keys())
