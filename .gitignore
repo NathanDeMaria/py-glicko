@@ -7,7 +7,9 @@
 .dmypy.json
 .idea/
 .mypy_cache/
+.pytest_cache/
 venv/
+python3env/
 
 # Datas
 data/
