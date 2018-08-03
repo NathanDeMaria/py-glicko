@@ -12,7 +12,7 @@ TeamLookup = Dict[str, Team]
 
 
 class Season:
-    def __init__(self, games: List[Game], team_lookup: TeamLookup):
+    def __init__(self, games: List[Game], team_lookup: TeamLookup) -> None:
         self._season = games[0].season
         for g in games:
             assert g.season == self._season
@@ -44,7 +44,7 @@ def run_league(league: League,
                init_variance: float,
                variance_over_time: float = 0.,
                n_iterations: int = 1) -> Tuple[float, List[Team]]:
-    season_groups: DefaultDict[List[Game]] = defaultdict(list)
+    season_groups: DefaultDict[int, List[Game]] = defaultdict(list)
     for game in league.games:
         season_groups[game.season].append(game)
     first_season = min(season_groups.keys())
@@ -56,7 +56,7 @@ def run_league(league: League,
         for games in season_groups.values()
     ]
 
-    discrepancy = 0
+    discrepancy = 0.
     for season in seasons:
         discrepancy += run_season(season, n_iterations)
         # Add variance increase in "offseason"
@@ -72,7 +72,7 @@ def run_league(league: League,
 
 
 def run_season(season: Season, n_iterations: int) -> float:
-    discrepancy = 0
+    discrepancy = 0.
     for i in range(1, n_iterations + 1):
         discrepancy = run_iteration(season, i)
     # Only from the last season
@@ -82,7 +82,7 @@ def run_season(season: Season, n_iterations: int) -> float:
 def run_iteration(season: Season, i: int) -> float:
     # Assuming the previous iteration has been marked on ``league_tracker``
     # NOTE: embarrassingly || over teams
-    total_discrepancy = 0
+    total_discrepancy = 0.
     for team in season.teams:
         team_games = season.get_games(team.name)
 
