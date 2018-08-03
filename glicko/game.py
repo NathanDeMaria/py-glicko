@@ -12,3 +12,9 @@ class Game:
     round: int
     date: datetime
     group: str
+
+    @property
+    def score(self) -> float:
+        # TODO: somewhere else?
+        return ((self.team_score ** 2)
+                / (self.team_score ** 2 + self.opponent_score ** 2))

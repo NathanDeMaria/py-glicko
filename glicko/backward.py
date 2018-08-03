@@ -1,89 +1,105 @@
 import numpy as np
 from collections import defaultdict
-from operator import itemgetter
-from typing import Iterable, DefaultDict, List, Callable, Tuple, Dict
+from typing import Iterable, DefaultDict, List, Tuple, Dict, Optional
 
 from .game import Game
 from .league import League
-from .team import Team
+from .team import Team, Rating
 from .update import update_rating
 
 
-FIRST = itemgetter(0)
-Groups = DefaultDict[int, DefaultDict[str, List[Game]]]
-ScoreFunction = Callable[[float, float], float]
+TeamLookup = Dict[str, Team]
 
 
-# TODO: does it matter enough to np.array this?
-def _pwp(score: float, opp_score: float) -> float:
-    return (score ** 2) / (score ** 2 + opp_score ** 2)
+class Season:
+    def __init__(self, games: List[Game], team_lookup: TeamLookup):
+        self._season = games[0].season
+        for g in games:
+            assert g.season == self._season
+        self._games = games
+        self._team_lookup = team_lookup
+
+    @property
+    def season_num(self) -> int:
+        return self._season
+
+    @property
+    def teams(self) -> Iterable[Team]:
+        return self._team_lookup.values()
+
+    def get_games(self, team: str,
+                  ignore: Optional[str] = None) -> Iterable[Game]:
+        for g in self._games:
+            if g.team == team and g.opponent != ignore:
+                yield g
+
+    def get_rating(self, team: str, iteration: int) -> Rating:
+        return self._team_lookup[team].get_rating_on(self._season, iteration)
+
+    def set_rating(self, team: str, iteration: int, rating: Rating) -> None:
+        self._team_lookup[team].update_rating(rating, self._season, iteration)
 
 
 def run_league(league: League,
                init_variance: float,
                variance_over_time: float = 0.,
-               n_iterations: int = 1,
-               score_fn: ScoreFunction = _pwp
-               ) -> Tuple[float, List[Team]]:
-
-    team_lookup: Dict[str, Team] = {
+               n_iterations: int = 1) -> Tuple[float, List[Team]]:
+    team_lookup = {
         t: Team(t, init_variance)
         for t in league.team_names
     }
-
-    def _build_results(games: Iterable[Game], s: int, r: int) -> np.ndarray:
-        return np.asarray([
-            team_lookup[g.opponent].get_rating_before(s, r) +
-            (score_fn(g.team_score, g.opponent_score),)
-            for g in games
-        ])
-
-    season_groups: Groups = defaultdict(lambda: defaultdict(list))
+    season_groups: DefaultDict[List[Game]] = defaultdict(list)
     for game in league.games:
-        season_groups[game.season][game.team].append(game)
+        season_groups[game.season].append(game)
+    seasons = [
+        Season(games, team_lookup)
+        for games in season_groups.values()
+    ]
 
-    total_discrepancy = 0.
-    for season, team_seasons in sorted(season_groups.items(), key=FIRST):
-        discrepancy = 0
-        for i in range(1, n_iterations + 1):
-            discrepancy = 0.
-            for team_name, team_games in team_seasons.items():
-                discrepancy += _run_team_iteration(_build_results, i, score_fn, season, team_games, team_lookup, team_name, team_seasons)
-        # Only bump the discrepancy for the last iteration
-        total_discrepancy += discrepancy
+    discrepancy = 0
+    for season in seasons:
+        discrepancy += run_season(season, n_iterations)
         # Add variance increase in "offseason"
         for team in team_lookup.values():
-            end_mean, end_var = team.get_rating_before(season + 1, 0)
+            end_mean, end_var = team.get_rating_before(
+                season.season_num + 1, 0)
             team.update_rating(
                 (end_mean, end_var + variance_over_time),
-                season + 1,
+                season.season_num + 1,
                 0
             )
-    return total_discrepancy, list(team_lookup.values())
+    return discrepancy, list(team_lookup.values())
 
 
-def _run_team_iteration(_build_results, i, score_fn, season, team_games,
-                        team_lookup, team_name, team_seasons):
-    team = team_lookup[team_name]
-    game_results = []
-    for game in team_games:
-        # Get the opponent's (i-1) rating,
-        # for games excluding ones against the current team
-        opponent = team_lookup[game.opponent]
-        previous_opp_rating = opponent.get_rating_before(season, i)
-        opponent_games = [
-            g for g in team_seasons[game.opponent]
-            if g.opponent != team_name
-        ]
-        games_array = _build_results(opponent_games, season, i)
-        new_rating, _ = update_rating(
-            previous_opp_rating, games_array)
-        game_results.append(
-            (*new_rating,
-             score_fn(game.team_score, game.opponent_score))
+def run_season(season: Season, n_iterations: int) -> float:
+    discrepancy = 0
+    for i in range(1, n_iterations + 1):
+        discrepancy = run_iteration(season, i)
+    # Only from the last season
+    return discrepancy
+
+
+def run_iteration(season: Season, i: int) -> float:
+    # Assuming the previous iteration has been marked on ``league_tracker``
+    # NOTE: embarrassingly || over teams
+    total_discrepancy = 0
+    for team in season.teams:
+        team_games = season.get_games(team.name)
+
+        opponent_results = []
+        for game in team_games:
+            opponent_games = season.get_games(game.opponent, ignore=game.team)
+            opponent_other_results = np.asarray([
+                season.get_rating(opp_game.opponent, i - 1) + (opp_game.score,)
+                for opp_game in opponent_games
+            ])
+            opponent_adjusted_rating, _ = update_rating(
+                season.get_rating(game.opponent, i - 1), opponent_other_results
+            )
+            opponent_results.append(opponent_adjusted_rating + (game.score,))
+        new_rating, discrepancy = update_rating(
+            season.get_rating(team.name, i - 1), np.asarray(opponent_results)
         )
-    game_results = np.array(game_results)
-    new_rating, team_discrepancy = update_rating(
-        team.rating, game_results)
-    team.update_rating(new_rating, season, i)
-    return team_discrepancy
+        team.update_rating(new_rating, season.season_num, i)
+        total_discrepancy += discrepancy
+    return total_discrepancy

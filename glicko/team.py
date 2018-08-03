@@ -8,7 +8,7 @@ class Team:
     def __init__(self, name: str, init_variance: float = 100) -> None:
         self._name = name
         self._ratings: Dict[int, Dict[int, Rating]] = {
-            0: {0: (1500., init_variance)}
+            1: {0: (1500., init_variance)}
         }
 
     @property
