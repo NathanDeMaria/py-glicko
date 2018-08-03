@@ -107,3 +107,14 @@ class TestBackward(TestCase):
 
         a2 = _get_team('a', teams)
         self.assertEqual(a2.rating, a.rating)
+
+    def test_backward__first_season_is_not_one(self):
+        league = League([
+            Game('a', 'b', 1, 0, 1000, 1, datetime.now(), 'A'),
+        ])
+        discrepancy, teams = run_league(league, 100)
+
+        self.assertGreater(discrepancy, 0)
+        a = _get_team('a', teams)
+        b = _get_team('b', teams)
+        self.assertGreater(a.rating, b.rating)

@@ -5,11 +5,9 @@ Time = Tuple[int, int]
 
 
 class Team:
-    def __init__(self, name: str, init_variance: float = 100) -> None:
+    def __init__(self, name: str) -> None:
         self._name = name
-        self._ratings: Dict[int, Dict[int, Rating]] = {
-            1: {0: (1500., init_variance)}
-        }
+        self._ratings: Dict[int, Dict[int, Rating]] = {}
 
     @property
     def name(self) -> str:

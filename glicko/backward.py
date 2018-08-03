@@ -44,13 +44,13 @@ def run_league(league: League,
                init_variance: float,
                variance_over_time: float = 0.,
                n_iterations: int = 1) -> Tuple[float, List[Team]]:
-    team_lookup = {
-        t: Team(t, init_variance)
-        for t in league.team_names
-    }
     season_groups: DefaultDict[List[Game]] = defaultdict(list)
     for game in league.games:
         season_groups[game.season].append(game)
+    first_season = min(season_groups.keys())
+    team_lookup = {t: Team(t) for t in league.team_names}
+    for team in team_lookup.values():
+        team.update_rating((1500, init_variance), first_season, 0)
     seasons = [
         Season(games, team_lookup)
         for games in season_groups.values()
