@@ -1,4 +1,4 @@
-from typing import Dict, Tuple, Iterator
+from typing import Dict, Tuple, Iterator, Optional
 
 Rating = Tuple[float, float]
 Time = Tuple[int, int]
@@ -46,3 +46,14 @@ class Team:
         for season, rounds in self._ratings.items():
             for round_num, (mean, variance) in rounds.items():
                 yield (season, round_num, mean, variance)
+
+    def __hash__(self) -> int:
+        return hash(self.name)
+
+    def __eq__(self, other: Optional['Team']) -> bool:
+        if other is None:
+            return False
+        return self.name == other.name
+
+    def __str__(self) -> str:
+        return f'Team(name={self._name}, rating={self.rating})'
