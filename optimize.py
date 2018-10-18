@@ -2,7 +2,8 @@ import sys
 import numpy as np
 from scipy.optimize import minimize
 
-from glicko import read_csv, run_league
+from glicko import read_csv
+from glicko.backward import run_league
 
 
 def main(path):
