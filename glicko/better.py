@@ -2,7 +2,6 @@ import numpy as np
 from collections import defaultdict
 from itertools import groupby
 from typing import Tuple, List, Iterator, NamedTuple, Callable
-from operator import attrgetter
 
 from .game import Game
 from .league import League
@@ -20,6 +19,10 @@ class TeamRound(NamedTuple):
     @property
     def rating_before(self) -> Rating:
         return self.team.get_rating_before(self.season, self.round_num)
+
+    @property
+    def rating_before_season(self) -> Rating:
+        return self.team.get_rating_before(self.season, 1)
 
     @property
     def round_results(self) -> np.ndarray:
@@ -79,17 +82,11 @@ def run_league(
 
 
 def run_season(games: Iterator[Iterator[TeamRound]]) -> float:
-    discrepancy = 0
-    for round_games in games:
-        discrepancy += run_round(round_games)
-    return discrepancy
+    return sum(run_round(round_games) for round_games in games)
 
 
 def run_round(round_games: Iterator[TeamRound]) -> float:
-    discrepancy = 0
-    for team_games in round_games:
-        discrepancy += run_team_round(team_games)
-    return discrepancy
+    return sum(run_team_round(team_games) for team_games in round_games)
 
 
 def run_team_round(team_round: TeamRound) -> float:
@@ -104,7 +101,7 @@ def run_team_round(team_round: TeamRound) -> float:
     # the results from the entire season so far
     # (against opponents' ratings from the round before).
     new_rating, _ = update_rating(
-        team_round.rating_before,
+        team_round.rating_before_season,
         team_round.season_results
     )
     team_round.team.update_rating(
