@@ -35,12 +35,29 @@ class TeamRound(NamedTuple):
 
     @property
     def season_results(self) -> np.ndarray:
-        return np.asarray([
-            game.opponent.get_rating_before(
-                self.season, self.round_num)
-            + (game.score,)
-            for game in self.season_games
-        ])
+        opponent_results = []
+        for game in self.season_games:
+            # Get the opponent's rating this season so far, ignoring
+            # the game against the current team.
+            opponent_rating = game.opponent.get_rating_before(
+                self.season, 1)
+            opponent_games = game.opponent.games.get(self.season)
+            if opponent_games:
+                opponent_opponent_results = np.asarray([
+                    opp_game.opponent.get_rating_before(
+                        self.season, self.round_num)
+                    + (opp_game.score,)
+                    for opp_game in opponent_games
+                    if opp_game.team != self.team
+                    # _Should_ already be true, but just in case
+                    # don't allow future games in here
+                    and opp_game.round < self.round_num
+                ])
+                opponent_rating, _ = update_rating(
+                    opponent_rating, opponent_opponent_results)
+            opponent_results.append(opponent_rating + (game.score,))
+
+        return np.asarray([opponent_results])
 
 
 class Season(NamedTuple):
@@ -106,6 +123,7 @@ def run_team_round(team_round: TeamRound) -> float:
     )
     team_round.team.update_rating(
         new_rating, team_round.season, team_round.round_num)
+    team_round.team.play_games(team_round.round_games)
 
     return discrepancy
 

@@ -1,4 +1,5 @@
-from typing import Dict, Tuple, Iterator, Optional
+from collections import defaultdict
+from typing import Dict, Tuple, Iterator, Optional, List
 
 Rating = Tuple[float, float]
 Time = Tuple[int, int]
@@ -8,6 +9,7 @@ class Team:
     def __init__(self, name: str) -> None:
         self._name = name
         self._ratings: Dict[int, Dict[int, Rating]] = {}
+        self.games: Dict[int, List] = defaultdict(list)
 
     @property
     def name(self) -> str:
@@ -57,3 +59,7 @@ class Team:
 
     def __str__(self) -> str:
         return f'Team(name={self._name}, rating={self.rating})'
+
+    def play_games(self, games):
+        for game in games:
+            self.games[game.season].append(game)
