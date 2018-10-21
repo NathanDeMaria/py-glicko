@@ -85,3 +85,23 @@ class TestBetter(TestCase):
 
         self.assertGreater(discrepancy, 0)
         self.assertGreater(a.rating, b.rating)
+
+    def test_better__none_from_next_week(self):
+        # You don't get a boost from beating
+        # somebody with a big win after you play
+        # for your rating on the week you play
+        a, b = Team('a'), Team('b')
+        league = League([
+            Game(a, b, 1, 0, season=1, round=1, date=datetime.now()),
+        ])
+        run_league(league)
+
+        a2, b2, c2 = Team('a'), Team('b'), Team('c')
+        league2 = League([
+            Game(a2, b2, 1, 0, season=1, round=1, date=datetime(1976, 3, 24)),
+            Game(a2, c2, 1, 0, season=1, round=2, date=datetime.now()),
+        ])
+        run_league(league2)
+
+        self.assertGreater(a2.rating, a.rating)
+        self.assertEqual(a2.get_rating_before(1, 2), a.get_rating_before(1, 2))
