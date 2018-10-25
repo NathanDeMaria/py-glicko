@@ -69,8 +69,8 @@ OffseasonRunner = Callable[[League, int], None]
 
 
 def create_basic_offseason_runner(
-        init_variance: float = 100,
-        variance_over_time: float = 100) -> OffseasonRunner:
+        init_variance: float = 1000,
+        variance_over_time: float = 1000) -> OffseasonRunner:
     def run_offseason(league: League, season: int) -> None:
         for team in league.teams:
             try:
@@ -149,7 +149,7 @@ def _group_games(games: List[Game]) -> Iterator[Season]:
                 team_round = TeamRound(
                     season, round_num, team,
                     team_games,
-                    season_game_lookup[team]
+                    season_game_lookup[team].copy()
                 )
                 team_rounds.append(team_round)
             season_rounds.append(team_rounds)
