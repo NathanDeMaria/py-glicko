@@ -1,20 +1,11 @@
 import { combineReducers } from 'redux';
 
+import { IWeeklyUpdateAction } from 'src/actions/actionCreators';
 import { SUCCESS_GET_WEEKLY_UPDATE } from 'src/actions/actionTypes';
+import { IWeeklyResultState } from 'src/interfaces';
 
-interface IState {
-  [key: number]: {
-    [key: number]: any,
-  }
-}
 
-// TODO: share this with other relevant places
-interface IAction {
-  type: string,
-  payload: any,
-}
-
-function weeklyUpdate(state: IState = {}, action: IAction) {
+function weeklyUpdate(state: IWeeklyResultState = {}, action: IWeeklyUpdateAction): IWeeklyResultState {
   switch (action.type) {
     case SUCCESS_GET_WEEKLY_UPDATE:
       const {
@@ -23,10 +14,8 @@ function weeklyUpdate(state: IState = {}, action: IAction) {
         results,
       } = action.payload;
       return {
-        weeklyResults: {
-          [season]: {
-            [round]: results,
-          },
+        [season]: {
+          [round]: results,
         },
         ...state,
       };
