@@ -25,7 +25,12 @@ export interface IWeeklyResultState {
   },
 };
 
+export interface IWeekSelectorState {
+  [key: number]: number[],
+};
+
 export interface IAppState {
   // has to match reducer name...for now
   weeklyUpdate: IWeeklyResultState,
+  weekSelector: IWeekSelectorState,
 };

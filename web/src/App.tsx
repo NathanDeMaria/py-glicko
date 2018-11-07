@@ -3,6 +3,7 @@ import { BrowserRouter, Route } from 'react-router-dom';
 
 import './App.css';
 import WeeklyUpdate from './containers/WeeklyUpdate/';
+import WeekSelector from './containers/WeekSelector/';
 
 
 // There's gotta be something that does this for you...
@@ -13,14 +14,7 @@ class App extends React.Component {
     return (
       <BrowserRouter>
         <div>
-          <div className="App">
-            <header className="App-header">
-              <h1 className="App-title">Welcome to React</h1>
-            </header>
-            <p className="App-intro">
-              To get started, edit <code>src/App.tsx</code> and save to reload.
-            </p>
-          </div>
+          <WeekSelector />
           <div>
             <Route
               path="/weekly/season/:season/round/:round"

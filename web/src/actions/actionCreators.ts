@@ -1,5 +1,8 @@
 import { ITeamRoundResult } from 'src/interfaces';
-import { SUCCESS_GET_WEEKLY_UPDATE } from './actionTypes';
+import {
+  SUCCESS_GET_SEASONS,
+  SUCCESS_GET_WEEKLY_UPDATE,
+} from './actionTypes';
 
 export interface IWeeklyUpdateAction {
   payload: {
@@ -7,6 +10,15 @@ export interface IWeeklyUpdateAction {
     round: number,
     season: number,
   },
+  type: string,
+};
+
+export interface IWeekSelectorAction {
+  payload: {
+    seasons: {
+      [key: number]: number[],
+    },
+  }
   type: string,
 };
 
@@ -31,4 +43,14 @@ export const getWeeklyUpdate = (season: number, round: number): IWeeklyUpdateAct
     season,
   },
   type: SUCCESS_GET_WEEKLY_UPDATE,
+});
+
+export const getSeasons = (): IWeekSelectorAction => ({
+  payload: {
+    seasons: {
+      2017: [...Array.from(Array(12).keys()).map(k => k + 1)],
+      2018: [...Array.from(Array(12).keys()).map(k => k + 1)],
+    }
+  },
+  type: SUCCESS_GET_SEASONS,
 });
