@@ -19,18 +19,18 @@ export interface ITeamRoundResult {
   gameResults: IGameResult[],
 };
 
-export interface IWeeklyResultState {
+export interface IWeeklyResult {
   [key: number]: {
     [key: number]: ITeamRoundResult[],
   },
 };
 
-export interface IWeekSelectorState {
+export interface ISeasons {
   [key: number]: number[],
 };
 
 export interface IAppState {
   // has to match reducer name...for now
-  weeklyUpdate: IWeeklyResultState,
-  weekSelector: IWeekSelectorState,
+  weeklyUpdate: IWeeklyResult,
+  weekSelector: ISeasons,
 };

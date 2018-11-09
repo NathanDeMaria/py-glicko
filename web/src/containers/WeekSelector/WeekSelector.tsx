@@ -29,9 +29,9 @@ export class WeekSelector extends React.Component<Props, {}> {
       <Menu style={{width: 200}}>
         <SubMenu title="Pick Round">
         {Object.keys(this.props.seasons).map(s => (
-          <SubMenu title={s}>
+          <SubMenu title={s} key={s}>
             {this.props.seasons[s].map((week: number) => (
-              <MenuItem>
+              <MenuItem key={week}>
                 <Link
                   style={{color: "black", textDecoration: "none"}}
                   to={`/weekly/season/${s}/round/${week}`}

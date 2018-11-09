@@ -5,10 +5,13 @@ import {
   SUCCESS_GET_SEASONS,
   SUCCESS_GET_WEEKLY_UPDATE,
 } from 'src/actions/actionTypes';
-import { IWeeklyResultState, IWeekSelectorState } from 'src/interfaces';
+import {
+  ISeasons,
+  IWeeklyResult,
+} from 'src/interfaces';
 
 
-function weeklyUpdate(state: IWeeklyResultState = {}, action: IWeeklyUpdateAction): IWeeklyResultState {
+function weeklyUpdate(state: IWeeklyResult = {}, action: IWeeklyUpdateAction): IWeeklyResult {
   switch (action.type) {
     case SUCCESS_GET_WEEKLY_UPDATE:
       const {
@@ -27,7 +30,7 @@ function weeklyUpdate(state: IWeeklyResultState = {}, action: IWeeklyUpdateActio
   };
 };
 
-function weekSelector(state: IWeekSelectorState = {}, action: IWeekSelectorAction): IWeekSelectorState {
+function weekSelector(state: ISeasons = {}, action: IWeekSelectorAction): ISeasons {
   switch(action.type) {
     case SUCCESS_GET_SEASONS:
       const {payload: {seasons: seasonList}} = action;
