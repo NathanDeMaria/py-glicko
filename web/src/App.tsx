@@ -7,7 +7,12 @@ import WeekSelector from './containers/WeekSelector/';
 
 
 // There's gotta be something that does this for you...
-const l = (m: any) => (<WeeklyUpdate {...m.match.params} />)
+const l = (m: any) => (
+  <WeeklyUpdate
+    {...m.match.params}
+    key={`${m.match.params.season}-${m.match.params.round}`}
+  />
+);
 
 class App extends React.Component {
   public render() {
