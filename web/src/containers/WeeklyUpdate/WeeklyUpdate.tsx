@@ -4,6 +4,7 @@ import { IGameResult, ITeamRoundResult } from 'src/interfaces';
 
 
 export interface IOwnProps {
+  league: string,
   season: number,
   round: number,
 }
@@ -13,7 +14,7 @@ export interface IStateProps {
 };
      
 interface IDispatchProps {
-  getWeeklyUpdate: (season: number, round: number) => void,
+  getWeeklyUpdate: (league: string, season: number, round: number) => void,
 }
  
 type Props = IStateProps & IDispatchProps & IOwnProps
@@ -54,7 +55,7 @@ function renderGame(game: IGameResult, i: number) {
 
 export class WeeklyUpdate extends React.Component<Props, {}> {
   public componentDidMount() {
-    this.props.getWeeklyUpdate(this.props.season, this.props.round);
+    this.props.getWeeklyUpdate(this.props.league, this.props.season, this.props.round);
   }
 
   public render() {

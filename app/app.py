@@ -13,12 +13,15 @@ app = Flask(__name__)
 CORS(app)
 
 
-LEAGUE = 'ncaaf'
+def get_league(league_name: str) -> League:
+    return ALL_LEAGUES.get(league_name)
 
 
-@app.route('/seasons')
-def seasons():
-    league = _get_league(LEAGUE)
+@app.route('/<league_name>/seasons')
+def seasons(league_name: str):
+    league = get_league(league_name)
+    if not league:
+        return jsonify(), 404
     season_lookup = defaultdict(set)
     for g in league.games:
         season_lookup[g.season].add(g.round)
@@ -76,9 +79,11 @@ class TeamRoundResult:
         )
 
 
-@app.route('/ratings/<int:season>/<int:week>')
-def ratings(season: int, week: int):
-    league = _get_league(LEAGUE)
+@app.route('/<league_name>/ratings/<int:season>/<int:week>')
+def ratings(league_name: str, season: int, week: int):
+    league = get_league(league_name)
+    if not league:
+        return jsonify(), 404
     team_results = []
     for team in league.teams:
         previous = team.get_rating_before(season, week)

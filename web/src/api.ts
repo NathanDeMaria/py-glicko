@@ -4,12 +4,12 @@ const API_ROOT = 'http://localhost:5000';
 
 
 export class Api {
-  public async getSeasons(): Promise<ISeasons> {
-    return await this.get<ISeasons>('seasons');
+  public async getSeasons(league: string): Promise<ISeasons> {
+    return await this.get<ISeasons>(`${league}/seasons`);
   }
 
-  public async getWeeklyUpdate(season: number, week: number): Promise<IWeeklyResult>{
-    return await this.get<IWeeklyResult>(`ratings/${season}/${week}`);
+  public async getWeeklyUpdate(league: string, season: number, week: number): Promise<IWeeklyResult>{
+    return await this.get<IWeeklyResult>(`${league}/ratings/${season}/${week}`);
   }
 
   private async get<T>(path: string): Promise<T> {

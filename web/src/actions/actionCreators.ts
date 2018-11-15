@@ -23,9 +23,9 @@ export interface IWeekSelectorAction {
   type: string,
 };
 
-export const getWeeklyUpdate = (season: number, round: number) => {
+export const getWeeklyUpdate = (league: string, season: number, round: number) => {
   return (dispatch: any) => {
-    (new Api()).getWeeklyUpdate(season, round)
+    (new Api()).getWeeklyUpdate(league, season, round)
       .then(results => dispatch({
         payload: {
           results,
@@ -37,9 +37,9 @@ export const getWeeklyUpdate = (season: number, round: number) => {
   };
 };
 
-export const getSeasons = () => {
+export const getSeasons = (league: string) => {
   return (dispatch: any) => {
-    (new Api()).getSeasons()
+    (new Api()).getSeasons(league)
       .then(seasons => dispatch({
         payload: {
           seasons,

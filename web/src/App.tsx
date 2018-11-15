@@ -14,15 +14,25 @@ const l = (m: any) => (
   />
 );
 
+const s = (m: any) => (
+  <WeekSelector
+    {...m.match.params}
+    key={m.match.params.league}
+  />
+);
+
 class App extends React.Component {
   public render() {
     return (
       <BrowserRouter>
         <div>
-          <WeekSelector />
+          <Route
+            path="/:league"
+            render={s}
+          />
           <div>
             <Route
-              path="/weekly/season/:season/round/:round"
+              path="/:league/weekly/season/:season/round/:round"
               render={l}
             />
           </div>

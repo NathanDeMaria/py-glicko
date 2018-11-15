@@ -6,22 +6,26 @@ import { Link } from 'react-router-dom';
 import 'rc-menu/assets/index.css';
 
 
+export interface IOwnProps {
+  league: string,
+};
+
 export interface IStateProps {
   seasons: {
     [key: number]: number[],
-  }
+  },
 };
 
 interface IDispatchProps {
-  getSeasons: () => void,
+  getSeasons: (league: string) => void,
 };
  
-type Props = IStateProps & IDispatchProps;
+type Props = IStateProps & IDispatchProps & IOwnProps;
 
 
 export class WeekSelector extends React.Component<Props, {}> {
   public componentDidMount() {
-    this.props.getSeasons();
+    this.props.getSeasons(this.props.league);
   }
 
   public render() {
@@ -34,7 +38,7 @@ export class WeekSelector extends React.Component<Props, {}> {
               <MenuItem key={week}>
                 <Link
                   style={{color: "black", textDecoration: "none"}}
-                  to={`/weekly/season/${s}/round/${week}`}
+                  to={`/${this.props.league}/weekly/season/${s}/round/${week}`}
                 >
                   {week}
                 </Link>
