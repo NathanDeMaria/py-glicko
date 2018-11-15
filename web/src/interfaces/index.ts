@@ -20,6 +20,13 @@ export interface ITeamRoundResult {
   gameResults: IGameResult[],
 };
 
+export interface ITeamRating {
+  mean: number,
+  variance: number,
+  season: number,
+  round: number,
+};
+
 export interface IWeeklyResult {
   [key: number]: {
     [key: number]: ITeamRoundResult[],
@@ -30,8 +37,15 @@ export interface ISeasons {
   [key: number]: number[],
 };
 
+export interface ITeamHistories {
+  [key: string]: {
+    [key: string]: ITeamRating[],
+  }
+};
+
 export interface IAppState {
   // has to match reducer name...for now
   weeklyUpdate: IWeeklyResult,
   weekSelector: ISeasons,
+  teamHistory: ITeamHistories,
 };

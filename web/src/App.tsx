@@ -2,6 +2,7 @@ import * as React from 'react';
 import { BrowserRouter, Route } from 'react-router-dom';
 
 import './App.css';
+import TeamHistory from './containers/TeamHistory/';
 import WeeklyUpdate from './containers/WeeklyUpdate/';
 import WeekSelector from './containers/WeekSelector/';
 
@@ -21,6 +22,13 @@ const s = (m: any) => (
   />
 );
 
+const t = (m: any) => (
+  <TeamHistory
+    {...m.match.params}
+    key={`${m.match.params.league}-${m.match.params.team}`}
+  />
+);
+
 class App extends React.Component {
   public render() {
     return (
@@ -30,12 +38,14 @@ class App extends React.Component {
             path="/:league"
             render={s}
           />
-          <div>
-            <Route
-              path="/:league/weekly/season/:season/round/:round"
-              render={l}
-            />
-          </div>
+          <Route
+            path="/:league/weekly/season/:season/round/:round"
+            render={l}
+          />
+          <Route
+            path="/:league/team/:team"
+            render={t}
+          />
         </div>
       </BrowserRouter>
     );
