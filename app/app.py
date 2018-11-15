@@ -13,9 +13,12 @@ app = Flask(__name__)
 CORS(app)
 
 
+LEAGUE = 'ncaaf'
+
+
 @app.route('/seasons')
 def seasons():
-    league = _get_league('nfl')
+    league = _get_league(LEAGUE)
     season_lookup = defaultdict(set)
     for g in league.games:
         season_lookup[g.season].add(g.round)
@@ -30,23 +33,32 @@ class TeamRoundResult:
     def __init__(self, name: str,
                  current: Tuple[float, float],
                  previous: float,
-                 game_results: List[Dict],
+                 week: int,
                  season_results: List[Game]) -> None:
         self.name = name
         self.current = current
         self.previous = previous
-        self.game_results = game_results
+        self.game_results = []
         self.wins = 0
         self.losses = 0
         self.ties = 0
         for g in season_results:
-            if g.score > g.opponent_score:
-                self.wins += 1
-            elif g.score < g.opponent_score:
-                self.losses += 1
-            else:
-                self.ties += 1
+            if g.round == week:
+                self.game_results.append(dict(
+                    opponent=g.opponent.name,
+                    opponentScore=g.opponent_score,
+                    score=g.team_score,
+                ))
+            if g.round <= week:
+                if g.team_score > g.opponent_score:
+                    self.wins += 1
+                elif g.team_score < g.opponent_score:
+                    self.losses += 1
+                else:
+                    self.ties += 1
+
         # Set later...srry
+        self.rank = None
         self.previous_rank = None
 
     def to_dict(self) -> Dict:
@@ -54,9 +66,11 @@ class TeamRoundResult:
             team=self.name,
             rating=self.current[0],
             variance=self.current[1],
+            previousRating=self.previous,
             wins=self.wins,
             losses=self.losses,
             ties=self.ties,
+            ranking=self.rank,
             previousRanking=self.previous_rank,
             gameResults=self.game_results,
         )
@@ -64,10 +78,9 @@ class TeamRoundResult:
 
 @app.route('/ratings/<int:season>/<int:week>')
 def ratings(season: int, week: int):
-    league = _get_league('nfl')
+    league = _get_league(LEAGUE)
     team_results = []
     for team in league.teams:
-        print(team._ratings[season])
         previous = team.get_rating_before(season, week)
         try:
             current = team.get_rating_on(season, week)
@@ -75,30 +88,23 @@ def ratings(season: int, week: int):
             # Only happens on a bye week?
             current = previous
         team_games = team.games[season]
-        game_results = [
-            dict(
-                opponent=g.opponent.name,
-                opponentScore=g.opponent_score,
-                score=g.score,
-            )
-            for g in team_games
-            if g.round == week
-        ]
         team_results.append(TeamRoundResult(
             team.name,
             current,
             previous[0],
-            game_results,
+            week,
             team_games
         ))
     for i, team in enumerate(sorted(
             team_results, key=lambda t: t.previous, reverse=True)):
         team.previous_rank = i + 1
+    sorted_teams = sorted(team_results,
+                          key=lambda t: t.current[0],
+                          reverse=True)
+    for i, team in enumerate(sorted_teams):
+        team.rank = i + 1
 
-    return jsonify([
-        t.to_dict() for t in
-        sorted(team_results, key=lambda t: t.current[0], reverse=True)
-    ])
+    return jsonify([t.to_dict() for t in sorted_teams])
 
 
 def import_file(full_name, path):

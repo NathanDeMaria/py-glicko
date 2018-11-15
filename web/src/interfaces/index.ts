@@ -1,4 +1,4 @@
-interface IGameResult {
+export interface IGameResult {
   opponent: string,
   score: number,
   opponentScore: number,
@@ -9,6 +9,7 @@ export interface ITeamRoundResult {
   
   rating: number,
   variance: number,
+  previousRating: number,
   
   wins: number,
   losses: number,
