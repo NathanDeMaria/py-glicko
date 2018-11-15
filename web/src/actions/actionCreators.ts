@@ -64,18 +64,14 @@ export interface ITeamHistoryPayload {
 
 export const getTeamHistory = (league: string, team: string) => {
   return (dispatch: ThunkDispatch<IAppState, void, ITeamHistoryPayload>) => {
-    dispatch({
-      payload: {
-        history: [
-          {mean: 1, variance: 1, season: 2018, round: 1},
-          {mean: 1, variance: 1, season: 2018, round: 2},
-          {mean: 1, variance: 1, season: 2018, round: 3},
-          {mean: 1, variance: 1, season: 2018, round: 4},
-        ],
-        league,
-        team,
-      },
-      type: SUCCESS_GET_TEAM_HISTORY,
-    })
+    (new Api()).getTeamHistory(league, team)
+      .then(history => dispatch({
+        payload: {
+          history,
+          league,
+          team,
+        },
+        type: SUCCESS_GET_TEAM_HISTORY,
+      }));
   };
 };
