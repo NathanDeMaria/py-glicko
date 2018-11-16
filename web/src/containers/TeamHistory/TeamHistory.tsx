@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {
-  CartesianGrid, Line, LineChart, Tooltip, XAxis,
+  CartesianGrid, Scatter, ScatterChart, Tooltip, YAxis,
 } from 'recharts';
 
 import { ITeamRating } from 'src/interfaces';
@@ -51,18 +51,29 @@ export default class extends React.Component<Props, {}> {
       season: td.season,
     }));
 
+    // TODO: filter to time window w/ http://recharts.org/en-US/examples/HighlightAndZoomLineChart
+    // Show mean in crosshair?
+    // Multiple per chart?
     return (
-      <LineChart
-        width={400}
-        height={400}
-        data={data}
-        margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
-      >
-        <XAxis dataKey="i" />
-        <Tooltip content={renderTooltip} />
-        <CartesianGrid stroke="#f5f5f5" />
-        <Line type="monotone" dataKey="mean" stroke="#387908" yAxisId={1} />
-      </LineChart>
+      <div>
+        <h1>{this.props.team}</h1>
+        <ScatterChart
+          width={800}
+          height={400}
+          margin={{ top: 5, right: 20, left: 30, bottom: 5 }}
+          data={data}
+          >
+          <YAxis
+            type="number"
+            domain={[dataMin => Math.round(dataMin), dataMax => Math.round(dataMax)]}
+            dataKey="mean"
+            allowDecimals={false}
+            />
+          <Tooltip content={renderTooltip} />
+          <CartesianGrid stroke="#f5f5f5" />
+          <Scatter fill="#8884d8" line={true} />
+        </ScatterChart>
+      </div>
     );
   }
 }

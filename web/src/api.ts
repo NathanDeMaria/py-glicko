@@ -13,12 +13,7 @@ export class Api {
   }
 
   public async getTeamHistory(league: string, team: string): Promise<ITeamRating[]> {
-    return [
-        {mean: 1, variance: 1, season: 2018, round: 1},
-        {mean: 2, variance: 1, season: 2018, round: 2},
-        {mean: 3, variance: 1, season: 2018, round: 3},
-        {mean: 4, variance: 1, season: 2018, round: 4},
-      ];
+    return await this.get<ITeamRating[]>(`${league}/team/${team}`);
   }
 
   private async get<T>(path: string): Promise<T> {

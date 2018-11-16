@@ -17,18 +17,22 @@ def get_league(league_name: str) -> League:
     return ALL_LEAGUES.get(league_name)
 
 
+def build_season_lookup(league: League) -> Dict[int, List[int]]:
+    season_lookup = defaultdict(set)
+    for g in league.games:
+        season_lookup[g.season].add(g.round)
+    # B/c sets aren't serializable
+    return {
+        k: list(v) for k, v in season_lookup.items()
+    }
+
+
 @app.route('/<league_name>/seasons')
 def seasons(league_name: str):
     league = get_league(league_name)
     if not league:
         return jsonify(), 404
-    season_lookup = defaultdict(set)
-    for g in league.games:
-        season_lookup[g.season].add(g.round)
-    # B/c sets aren't serializable
-    season_lookup = {
-        k: list(v) for k, v in season_lookup.items()
-    }
+    season_lookup = build_season_lookup(league)
     return jsonify(season_lookup)
 
 
@@ -110,6 +114,37 @@ def ratings(league_name: str, season: int, week: int):
         team.rank = i + 1
 
     return jsonify([t.to_dict() for t in sorted_teams])
+
+
+@app.route('/<league_name>/team/<team_name>')
+def get_team_history(league_name: str, team_name: str):
+    league = get_league(league_name)
+    if not league:
+        return jsonify(), 404
+    team = None
+    # Maybe turn this into a lookup...
+    for t in league.teams:
+        if t.name.replace(' ', '') == team_name:
+            team = t
+            break
+    if not team:
+        return jsonify(), 404
+
+    season_lookup = build_season_lookup(league)
+    history = []
+    for s, rounds in season_lookup.items():
+        for r in rounds:
+            try:
+                mean, variance = team.get_rating_on(s, r)
+                history.append(dict(
+                    mean=mean,
+                    variance=variance,
+                    season=s,
+                    round=r,
+                ))
+            except KeyError:
+                pass
+    return jsonify(history)
 
 
 def import_file(full_name, path):
