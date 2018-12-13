@@ -9,12 +9,17 @@ from .team import Team
 from .update import update_rating, Rating
 
 
+OffseasonRunner = Callable[[League, int], None]
+ScoreFunction = Callable[[Game], float]
+
+
 class TeamRound(NamedTuple):
     season: int
     round_num: int
     team: Team
     round_games: Iterator[Game]
     season_games: Iterator[Game]
+    get_score: ScoreFunction
 
     @property
     def rating_before(self) -> Rating:
@@ -29,7 +34,7 @@ class TeamRound(NamedTuple):
         return np.asarray([
             game.opponent.get_rating_before(
                 self.season, self.round_num)
-            + (game.score,)
+            + (self.get_score(game),)
             for game in self.round_games
         ])
 
@@ -46,7 +51,7 @@ class TeamRound(NamedTuple):
                 opponent_opponent_results = np.asarray([
                     opp_game.opponent.get_rating_before(
                         self.season, self.round_num)
-                    + (opp_game.score,)
+                    + (self.get_score(opp_game),)
                     for opp_game in opponent_games
                     if opp_game.team != self.team
                     # _Should_ already be true, but just in case
@@ -55,7 +60,7 @@ class TeamRound(NamedTuple):
                 ])
                 opponent_rating, _ = update_rating(
                     opponent_rating, opponent_opponent_results)
-            opponent_results.append(opponent_rating + (game.score,))
+            opponent_results.append(opponent_rating + (self.get_score(game),))
 
         return np.asarray([opponent_results])
 
@@ -63,9 +68,6 @@ class TeamRound(NamedTuple):
 class Season(NamedTuple):
     season: int
     season_games: Iterator[Iterator[TeamRound]]
-
-
-OffseasonRunner = Callable[[League, int], None]
 
 
 def create_basic_offseason_runner(
@@ -86,11 +88,17 @@ def create_basic_offseason_runner(
     return run_offseason
 
 
+def pwp(game: Game, exponent: float = 2.0) -> float:
+    denom = (game.team_score ** exponent + game.opponent_score ** exponent)
+    return (game.team_score ** exponent) / denom
+
+
 def run_league(
         league: League,
-        run_offseason: OffseasonRunner = create_basic_offseason_runner()
+        run_offseason: OffseasonRunner = create_basic_offseason_runner(),
+        get_score: ScoreFunction = pwp,
 ) -> Tuple[float, List[Team]]:
-    games = _group_games(league.games)
+    games = _group_games(league.games, get_score)
     discrepancy = 0
     for season in games:
         run_offseason(league, season.season)
@@ -128,7 +136,8 @@ def run_team_round(team_round: TeamRound) -> float:
     return discrepancy
 
 
-def _group_games(games: List[Game]) -> Iterator[Season]:
+def _group_games(games: List[Game],
+                 get_score: ScoreFunction) -> Iterator[Season]:
     """
     Create groups where the first loop is over seasons,
     the second is over rounds, the third is teams.
@@ -149,7 +158,8 @@ def _group_games(games: List[Game]) -> Iterator[Season]:
                 team_round = TeamRound(
                     season, round_num, team,
                     team_games,
-                    season_game_lookup[team].copy()
+                    season_game_lookup[team].copy(),
+                    get_score,
                 )
                 team_rounds.append(team_round)
             season_rounds.append(team_rounds)

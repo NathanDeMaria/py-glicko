@@ -15,12 +15,6 @@ class Game:
     date: datetime
 
     @property
-    def score(self) -> float:
-        # TODO: somewhere else?
-        return ((self.team_score ** 2)
-                / (self.team_score ** 2 + self.opponent_score ** 2))
-
-    @property
     def flipped(self) -> 'Game':
         return Game(
             team=self.opponent,
