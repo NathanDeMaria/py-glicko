@@ -63,3 +63,8 @@ class Team:
     def play_games(self, games):
         for game in games:
             self.games[game.season].append(game)
+
+    def reset(self):
+        # TODO: maybe don't put gross logic in here instead?
+        self.games = defaultdict(list)
+        self._ratings: Dict[int, Dict[int, Rating]] = {}

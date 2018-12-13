@@ -98,6 +98,8 @@ def run_league(
         run_offseason: OffseasonRunner = create_basic_offseason_runner(),
         get_score: ScoreFunction = pwp,
 ) -> Tuple[float, List[Team]]:
+    for t in league.teams:
+        t.reset()
     games = _group_games(league.games, get_score)
     discrepancy = 0
     for season in games:
