@@ -65,7 +65,8 @@ export default class extends React.Component<Props, {}> {
           >
           <YAxis
             type="number"
-            domain={[dataMin => Math.round(dataMin), dataMax => Math.round(dataMax)]}
+            domain={[dataMin => Math.floor(dataMin / 100) * 100,
+                     dataMax => Math.ceil(dataMax / 100) * 100]}
             dataKey="mean"
             allowDecimals={false}
             />
