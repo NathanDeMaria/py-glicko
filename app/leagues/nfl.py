@@ -4,7 +4,7 @@ from collections import defaultdict
 from scipy.optimize import minimize
 
 from glicko import run_league, read_csv
-from glicko.better import League, create_basic_offseason_runner
+from glicko.run import League, create_basic_offseason_runner
 
 
 CSV_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'nfl.csv')
