@@ -35,9 +35,16 @@ def update_rating(rating: Rating,
     weighted_surprise = (g_opp * (scores - expected_scores)).sum()
     update_mean = team_mean + Q * updated_variance * weighted_surprise
 
-    g_combo = _g(team_variance + opponent_variances)
-    win_prob = 1 / (1 + 10 ** (-g_combo * mean_diff))
+    win_prob = calc_win_prob(rating, opponent_results[..., :2].T)
     discrepancies = (-scores * np.log(win_prob)
                      - (1 - scores) * np.log(1 - win_prob))
 
     return (update_mean, updated_variance), discrepancies.sum()
+
+
+def calc_win_prob(team_rating, opponent_rating) -> float:
+    team_mean, team_variance = team_rating
+    opp_mean, opponent_variance = opponent_rating
+    mean_diff = (team_mean - opp_mean) / 400
+    g_combo = _g(team_variance + opponent_variance)
+    return 1 / (1 + 10 ** (-g_combo * mean_diff))
