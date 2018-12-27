@@ -28,7 +28,7 @@ def read_csv(csv_path: str) -> League:
                 team_score=float(row['score']),
                 opponent_score=float(row['opponent_score']),
                 season=int(row['season']),
-                round=round_num,
+                round_num=round_num,
                 date=date
             ))
 
