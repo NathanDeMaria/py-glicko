@@ -23,6 +23,13 @@ interface IDispatchProps {
 type Props = IStateProps & IDispatchProps & IOwnProps;
 
 
+function compareInt(a: string, b: string): number {
+  const intA = parseInt(a, 10);
+  const intB = parseInt(b, 10);
+  return intA - intB;
+}
+
+
 export class WeekSelector extends React.Component<Props, {}> {
   public componentDidMount() {
     this.props.getSeasons(this.props.league);
@@ -32,9 +39,13 @@ export class WeekSelector extends React.Component<Props, {}> {
     return (
       <Menu style={{width: 200}}>
         <SubMenu title="Pick Round">
-        {Object.keys(this.props.seasons).map(s => (
+        {Object.keys(this.props.seasons)
+          .sort(compareInt).reverse()
+          .map(s => (
           <SubMenu title={s} key={s}>
-            {this.props.seasons[s].map((week: number) => (
+            {this.props.seasons[s]
+              .sort(compareInt).reverse()
+              .map((week: number) => (
               <MenuItem key={week}>
                 <Link
                   style={{color: "black", textDecoration: "none"}}
