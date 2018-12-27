@@ -1,11 +1,13 @@
 import { combineReducers } from 'redux';
 
 import {
+  ILeaguesPayload,
   ITeamHistoryPayload,
   IWeeklyUpdateAction,
   IWeekSelectorPayload,
 } from 'src/actions/actionCreators';
 import {
+  SUCCESS_GET_LEAGUES,
   SUCCESS_GET_SEASONS,
   SUCCESS_GET_TEAM_HISTORY,
   SUCCESS_GET_WEEKLY_UPDATE,
@@ -68,7 +70,18 @@ function teamHistory(state: ITeamHistories = {}, action: ITeamHistoryPayload): I
   };
 };
 
+function leagueSelector(state: string[] = [], action: ILeaguesPayload): string[] {
+  switch(action.type) {
+    case SUCCESS_GET_LEAGUES:
+      const { leagues } = action.payload;
+      return leagues;
+    default:
+      return state;
+  };
+}
+
 const reducer = combineReducers({
+  leagueSelector,
   teamHistory,
   weekSelector,
   weeklyUpdate,

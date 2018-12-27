@@ -1,8 +1,13 @@
 import { ThunkDispatch } from 'redux-thunk';
 
 import { Api } from 'src/api';
-import { IAppState, ITeamRating, ITeamRoundResult } from 'src/interfaces';
 import {
+  IAppState,
+  ITeamRating,
+  ITeamRoundResult,
+} from 'src/interfaces';
+import {
+  SUCCESS_GET_LEAGUES,
   SUCCESS_GET_SEASONS,
   SUCCESS_GET_TEAM_HISTORY,
   SUCCESS_GET_WEEKLY_UPDATE,
@@ -75,3 +80,22 @@ export const getTeamHistory = (league: string, team: string) => {
       }));
   };
 };
+
+export interface ILeaguesPayload {
+  payload: {
+    leagues: string[],
+  },
+  type: string,
+};
+
+export const getLeagues = () => {
+  return (dispatch: ThunkDispatch<IAppState, void, ILeaguesPayload>) => {
+    (new Api()).getLeagues()
+      .then(leagues => dispatch({
+        payload: {
+          leagues,
+        },
+        type: SUCCESS_GET_LEAGUES,
+      }));
+  }
+}

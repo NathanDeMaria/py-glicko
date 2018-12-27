@@ -1,4 +1,8 @@
-import { ISeasons, ITeamRating, IWeeklyResult } from './interfaces';
+import {
+  ISeasons,
+  ITeamRating,
+  IWeeklyResult,
+} from './interfaces';
 
 const API_ROOT = 'http://localhost:5000';
 
@@ -14,6 +18,10 @@ export class Api {
 
   public async getTeamHistory(league: string, team: string): Promise<ITeamRating[]> {
     return await this.get<ITeamRating[]>(`${league}/team/${team}`);
+  }
+
+  public async getLeagues() {
+    return await this.get<string[]>('leagues');
   }
 
   private async get<T>(path: string): Promise<T> {

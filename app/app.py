@@ -89,6 +89,12 @@ def ratings(league_name: str, season: int, week: int):
     if not league:
         return jsonify(), 404
     team_results = []
+
+    # if they're null??
+    if not season and not week:
+        season = max(g.season for g in league.games)
+        week = max(g.round for g in league.games if g.season == season)
+
     for team in league.teams:
         previous = team.get_rating_before(season, week)
         try:
@@ -145,6 +151,11 @@ def get_team_history(league_name: str, team_name: str):
             except KeyError:
                 pass
     return jsonify(history)
+
+
+@app.route('/leagues')
+def get_leagues():
+    return jsonify(list(ALL_LEAGUES.keys()))
 
 
 def import_file(full_name, path):

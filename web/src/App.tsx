@@ -2,12 +2,17 @@ import * as React from 'react';
 import { BrowserRouter, Route } from 'react-router-dom';
 
 import './App.css';
+import LeagueSelector from './containers/LeagueSelector/';
 import TeamHistory from './containers/TeamHistory/';
 import WeeklyUpdate from './containers/WeeklyUpdate/';
 import WeekSelector from './containers/WeekSelector/';
 
 
 // There's gotta be something that does this for you...
+const h = () => (
+  <LeagueSelector />
+);
+
 const l = (m: any) => (
   <WeeklyUpdate
     {...m.match.params}
@@ -34,6 +39,10 @@ class App extends React.Component {
     return (
       <BrowserRouter>
         <div>
+          <Route
+            path="/"
+            render={h}
+          />
           <Route
             path="/:league"
             render={s}
