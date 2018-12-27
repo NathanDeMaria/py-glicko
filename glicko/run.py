@@ -9,6 +9,9 @@ from .team import Team
 from .update import update_rating, Rating
 
 
+OffseasonRunner = Callable[[League, int], None]
+
+
 class TeamRound(NamedTuple):
     season: int
     round_num: int
@@ -65,9 +68,6 @@ class Season(NamedTuple):
     season_games: Iterator[Iterator[TeamRound]]
 
 
-OffseasonRunner = Callable[[League, int], None]
-
-
 def create_basic_offseason_runner(
         init_variance: float = 1000,
         variance_over_time: float = 1000) -> OffseasonRunner:
@@ -88,8 +88,10 @@ def create_basic_offseason_runner(
 
 def run_league(
         league: League,
-        run_offseason: OffseasonRunner = create_basic_offseason_runner()
+        run_offseason: OffseasonRunner = create_basic_offseason_runner(),
 ) -> Tuple[float, List[Team]]:
+    for t in league.teams:
+        t.reset()
     games = _group_games(league.games)
     discrepancy = 0
     for season in games:
@@ -149,7 +151,7 @@ def _group_games(games: List[Game]) -> Iterator[Season]:
                 team_round = TeamRound(
                     season, round_num, team,
                     team_games,
-                    season_game_lookup[team].copy()
+                    season_game_lookup[team].copy(),
                 )
                 team_rounds.append(team_round)
             season_rounds.append(team_rounds)

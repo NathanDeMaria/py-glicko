@@ -57,9 +57,21 @@ class Team:
             return False
         return self.name == other.name
 
+    def __repr__(self) -> str:
+        try:
+            rating = self.rating
+        except ValueError:
+            rating = None
+        return f'Team(name={self._name}, rating={rating})'
+
     def __str__(self) -> str:
-        return f'Team(name={self._name}, rating={self.rating})'
+        return self.__repr__()
 
     def play_games(self, games):
         for game in games:
             self.games[game.season].append(game)
+
+    def reset(self):
+        # TODO: maybe don't put gross logic in here instead?
+        self.games = defaultdict(list)
+        self._ratings: Dict[int, Dict[int, Rating]] = {}
