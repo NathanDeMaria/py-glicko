@@ -2,6 +2,7 @@ import * as React from "react";
 
 import { Link } from 'react-router-dom';
 
+import './styles.css';
 
 export interface IStateProps {
   leagues: string[],
@@ -21,10 +22,11 @@ export class LeagueSelector extends React.Component<Props, {}> {
 
   public render() {
     return (
-      <ul>
+      <ul className='navbar'>
         {this.props.leagues.map((league: string) => (
-          <li>
+          <li className='league'>
             <Link
+              className='leagueLink'
               to={`/${league}`}
             >
               {league.toUpperCase()}
