@@ -23,16 +23,20 @@ function weeklyUpdate(state: IWeeklyResult = {}, action: IWeeklyUpdateAction): I
   switch (action.type) {
     case SUCCESS_GET_WEEKLY_UPDATE:
       const {
+        league,
         season,
         round,
         results,
       } = action.payload;
-      return {
-        [season]: {
-          [round]: results,
-        },
+      const updated = {
         ...state,
+        [league]: {
+          [season]: {
+            [round]: results,
+          },
+        },
       };
+      return updated;
     default:
       return state;
   };

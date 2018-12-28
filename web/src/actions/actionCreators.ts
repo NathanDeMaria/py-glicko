@@ -15,6 +15,7 @@ import {
 
 export interface IWeeklyUpdateAction {
   payload: {
+    league: string,
     results: ITeamRoundResult[],
     round: number,
     season: number,
@@ -28,6 +29,7 @@ export const getWeeklyUpdate = (league: string, season: number, round: number) =
     (new Api()).getWeeklyUpdate(league, season, round)
       .then(results => dispatch({
         payload: {
+          league,
           results,
           round,
           season,

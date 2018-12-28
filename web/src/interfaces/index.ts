@@ -28,8 +28,10 @@ export interface ITeamRating {
 };
 
 export interface IWeeklyResult {
-  [key: number]: {
-    [key: number]: ITeamRoundResult[],
+  [key: string]: {
+    [key: number]: {
+      [key: number]: ITeamRoundResult[],
+    },
   },
 };
 
