@@ -33,8 +33,12 @@ export interface IWeeklyResult {
   },
 };
 
-export interface ISeasons {
+export interface ISeason {
   [key: number]: number[],
+}
+
+export interface ISeasons {
+  [key: string]: ISeason,
 };
 
 export interface ITeamHistories {

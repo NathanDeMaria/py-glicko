@@ -39,6 +39,7 @@ export const getWeeklyUpdate = (league: string, season: number, round: number) =
 
 export interface IWeekSelectorPayload {
   payload: {
+    league: string,
     seasons: {
       [key: number]: number[],
     },
@@ -51,6 +52,7 @@ export const getSeasons = (league: string) => {
     (new Api()).getSeasons(league)
       .then(seasons => dispatch({
         payload: {
+          league,
           seasons,
         },
         type: SUCCESS_GET_SEASONS,

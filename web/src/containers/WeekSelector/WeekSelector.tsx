@@ -36,6 +36,7 @@ export class WeekSelector extends React.Component<Props, {}> {
   }
 
   public render() {
+    if (!this.props.seasons) { return null };
     return (
       <Menu style={{width: 200}}>
         <SubMenu title="Pick Round">

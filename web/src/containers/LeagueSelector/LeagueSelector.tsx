@@ -23,8 +23,8 @@ export class LeagueSelector extends React.Component<Props, {}> {
   public render() {
     return (
       <ul className='navbar'>
-        {this.props.leagues.map((league: string) => (
-          <li className='league'>
+        {this.props.leagues.map((league: string, i: number) => (
+          <li className='league' key={i}>
             <Link
               className='leagueLink'
               to={`/${league}`}

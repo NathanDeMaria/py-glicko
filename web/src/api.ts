@@ -1,5 +1,5 @@
 import {
-  ISeasons,
+  ISeason,
   ITeamRating,
   IWeeklyResult,
 } from './interfaces';
@@ -8,8 +8,8 @@ const API_ROOT = 'http://localhost:5000';
 
 
 export class Api {
-  public async getSeasons(league: string): Promise<ISeasons> {
-    return await this.get<ISeasons>(`${league}/seasons`);
+  public async getSeasons(league: string): Promise<ISeason> {
+    return await this.get<ISeason>(`${league}/seasons`);
   }
 
   public async getWeeklyUpdate(league: string, season: number, week: number): Promise<IWeeklyResult>{

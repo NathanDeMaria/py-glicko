@@ -41,9 +41,12 @@ function weeklyUpdate(state: IWeeklyResult = {}, action: IWeeklyUpdateAction): I
 function weekSelector(state: ISeasons = {}, action: IWeekSelectorPayload): ISeasons {
   switch(action.type) {
     case SUCCESS_GET_SEASONS:
-      const {payload: {seasons: seasonList}} = action;
+      const {payload: {
+        seasons: seasonList,
+        league,
+      }} = action;
       return {
-        ...seasonList,
+        [league]: seasonList,
         ...state,
       }
     default:
