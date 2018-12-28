@@ -72,6 +72,7 @@ function teamHistory(state: ITeamHistories = {}, action: ITeamHistoryPayload): I
       return {
         ...state,
         [league]: {
+          ...state[league],
           [team]: history,
         },
       }

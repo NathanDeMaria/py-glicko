@@ -4,6 +4,7 @@ import { getTeamHistory } from 'src/actions/actionCreators';
 import { IAppState } from 'src/interfaces';
 import TeamHistory, { IOwnProps, IStateProps } from './TeamHistory';
 
+// TODO: burn unused stuff here
 const mapStateToProps = (state: IAppState, ownProps: IOwnProps): IStateProps => {
   const { league, team } = ownProps;
   const {

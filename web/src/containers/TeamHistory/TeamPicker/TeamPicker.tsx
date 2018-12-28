@@ -6,7 +6,6 @@ export interface IOwnProps {
   league: string,
 }
 
-// TODO: do I need this state?
 export interface IStateProps {
   teams: string[],
 };
