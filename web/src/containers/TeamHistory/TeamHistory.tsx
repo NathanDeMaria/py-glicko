@@ -5,6 +5,8 @@ import {
 
 import { ITeamRating } from 'src/interfaces';
 
+import TeamPicker from './TeamPicker';
+
 export interface IOwnProps {
   league: string,
   team: string,
@@ -36,6 +38,10 @@ function renderTooltip(props: any) {
 }
 
 export default class extends React.Component<Props, {}> {
+  public state = {
+    selected: [],
+  }
+
   public componentDidMount() {
     this.props.getTeamHistory();
   }
@@ -57,19 +63,22 @@ export default class extends React.Component<Props, {}> {
     return (
       <div>
         <h1>{this.props.team}</h1>
+        <TeamPicker league={this.props.league} />
         <ScatterChart
           width={800}
           height={400}
           margin={{ top: 5, right: 20, left: 30, bottom: 5 }}
           data={data}
           >
-          <YAxis
+          {this.state.selected.map((team: any) => (
+            <YAxis
             type="number"
             domain={[dataMin => Math.floor(dataMin / 100) * 100,
                      dataMax => Math.ceil(dataMax / 100) * 100]}
             dataKey="mean"
             allowDecimals={false}
             />
+          ))}
           <Tooltip content={renderTooltip} />
           <CartesianGrid stroke="#f5f5f5" />
           <Scatter fill="#8884d8" line={true} />

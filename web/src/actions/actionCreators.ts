@@ -10,6 +10,7 @@ import {
   SUCCESS_GET_LEAGUES,
   SUCCESS_GET_SEASONS,
   SUCCESS_GET_TEAM_HISTORY,
+  SUCCESS_GET_TEAMS,
   SUCCESS_GET_WEEKLY_UPDATE,
 } from './actionTypes';
 
@@ -71,6 +72,7 @@ export interface ITeamHistoryPayload {
   type: string,
 };
 
+// TODO: shouldGetTeamHistory??
 export const getTeamHistory = (league: string, team: string) => {
   return (dispatch: ThunkDispatch<IAppState, void, ITeamHistoryPayload>) => {
     (new Api()).getTeamHistory(league, team)
@@ -103,3 +105,24 @@ export const getLeagues = () => {
       }));
   }
 }
+
+export interface ITeamsPayload {
+  payload: {
+    league: string,
+    teams: string[],
+  },
+  type: string,
+}
+
+export const getTeams = (league: string) => {
+  return (dispatch: ThunkDispatch<IAppState, void, ITeamsPayload>) => {
+    (new Api()).getTeams(league)
+      .then(teams => dispatch({
+        payload: {
+          league,
+          teams,
+        },
+        type: SUCCESS_GET_TEAMS,
+      }));
+  };
+};

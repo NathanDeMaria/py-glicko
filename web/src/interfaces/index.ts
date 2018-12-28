@@ -43,6 +43,10 @@ export interface ISeasons {
   [key: string]: ISeason,
 };
 
+export interface ITeams {
+  [key: string]: string[],
+};
+
 export interface ITeamHistories {
   [key: string]: {
     [key: string]: ITeamRating[],
@@ -54,5 +58,6 @@ export interface IAppState {
   weeklyUpdate: IWeeklyResult,
   weekSelector: ISeasons,
   teamHistory: ITeamHistories,
+  teamsPicker: ITeams,
   leagueSelector: string[],
 };

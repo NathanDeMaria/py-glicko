@@ -158,6 +158,16 @@ def get_leagues():
     return jsonify(list(ALL_LEAGUES.keys()))
 
 
+@app.route('/<league_name>/teams')
+def get_teams(league_name: str):
+    league = get_league(league_name)
+    if not league:
+        return jsonify(), 404
+
+    teams = [t.name for t in league.teams]
+    return jsonify(teams)
+
+
 def import_file(full_name, path):
     spec = importlib.util.spec_from_file_location(full_name, path)
     mod = importlib.util.module_from_spec(spec)

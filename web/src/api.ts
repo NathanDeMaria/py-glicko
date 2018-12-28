@@ -20,8 +20,12 @@ export class Api {
     return await this.get<ITeamRating[]>(`${league}/team/${team}`);
   }
 
-  public async getLeagues() {
+  public async getLeagues(): Promise<string[]> {
     return await this.get<string[]>('leagues');
+  }
+
+  public async getTeams(league: string): Promise<string[]> {
+    return await this.get<string[]>(`${league}/teams`);
   }
 
   private async get<T>(path: string): Promise<T> {

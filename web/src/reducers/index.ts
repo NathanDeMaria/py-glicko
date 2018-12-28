@@ -3,6 +3,7 @@ import { combineReducers } from 'redux';
 import {
   ILeaguesPayload,
   ITeamHistoryPayload,
+  ITeamsPayload,
   IWeeklyUpdateAction,
   IWeekSelectorPayload,
 } from 'src/actions/actionCreators';
@@ -10,11 +11,13 @@ import {
   SUCCESS_GET_LEAGUES,
   SUCCESS_GET_SEASONS,
   SUCCESS_GET_TEAM_HISTORY,
+  SUCCESS_GET_TEAMS,
   SUCCESS_GET_WEEKLY_UPDATE,
 } from 'src/actions/actionTypes';
 import {
   ISeasons,
   ITeamHistories,
+  ITeams,
   IWeeklyResult,
 } from 'src/interfaces';
 
@@ -67,10 +70,10 @@ function teamHistory(state: ITeamHistories = {}, action: ITeamHistoryPayload): I
         team,
       } = action.payload;
       return {
+        ...state,
         [league]: {
           [team]: history,
         },
-        ...state,
       }
     default:
       return state;
@@ -87,9 +90,23 @@ function leagueSelector(state: string[] = [], action: ILeaguesPayload): string[]
   };
 }
 
+function teamsPicker(state: ITeams = {}, action: ITeamsPayload): ITeams {
+  switch(action.type) {
+    case SUCCESS_GET_TEAMS:
+      const { league, teams } = action.payload;
+      return {
+        ...state,
+        [league]: teams,
+      };
+    default:
+      return state;
+  }
+}
+
 const reducer = combineReducers({
   leagueSelector,
   teamHistory,
+  teamsPicker,
   weekSelector,
   weeklyUpdate,
 });
