@@ -28,13 +28,23 @@ export interface ITeamRating {
 };
 
 export interface IWeeklyResult {
-  [key: number]: {
-    [key: number]: ITeamRoundResult[],
+  [key: string]: {
+    [key: number]: {
+      [key: number]: ITeamRoundResult[],
+    },
   },
 };
 
-export interface ISeasons {
+export interface ISeason {
   [key: number]: number[],
+}
+
+export interface ISeasons {
+  [key: string]: ISeason,
+};
+
+export interface ITeams {
+  [key: string]: string[],
 };
 
 export interface ITeamHistories {
@@ -48,4 +58,6 @@ export interface IAppState {
   weeklyUpdate: IWeeklyResult,
   weekSelector: ISeasons,
   teamHistory: ITeamHistories,
+  teamsPicker: ITeams,
+  leagueSelector: string[],
 };

@@ -1,11 +1,15 @@
-import { ISeasons, ITeamRating, IWeeklyResult } from './interfaces';
+import {
+  ISeason,
+  ITeamRating,
+  IWeeklyResult,
+} from './interfaces';
 
 const API_ROOT = 'http://localhost:5000';
 
 
 export class Api {
-  public async getSeasons(league: string): Promise<ISeasons> {
-    return await this.get<ISeasons>(`${league}/seasons`);
+  public async getSeasons(league: string): Promise<ISeason> {
+    return await this.get<ISeason>(`${league}/seasons`);
   }
 
   public async getWeeklyUpdate(league: string, season: number, week: number): Promise<IWeeklyResult>{
@@ -14,6 +18,14 @@ export class Api {
 
   public async getTeamHistory(league: string, team: string): Promise<ITeamRating[]> {
     return await this.get<ITeamRating[]>(`${league}/team/${team}`);
+  }
+
+  public async getLeagues(): Promise<string[]> {
+    return await this.get<string[]>('leagues');
+  }
+
+  public async getTeams(league: string): Promise<string[]> {
+    return await this.get<string[]>(`${league}/teams`);
   }
 
   private async get<T>(path: string): Promise<T> {

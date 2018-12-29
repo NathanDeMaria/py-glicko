@@ -7,8 +7,14 @@ import { IAppState } from 'src/interfaces';
 import { IOwnProps, IStateProps, WeeklyUpdate } from './WeeklyUpdate';
 
 const mapStateToProps = (state: IAppState, ownProps: IOwnProps): IStateProps => {
-  const {weeklyUpdate: {[ownProps.season]: season}} = state;
   // Gotta be a better way to do this w/ null coalesing? Tuple key?
+  const {weeklyUpdate: {[ownProps.league]: leagueResults}} = state;
+  if(!leagueResults) {
+    return {
+      weekResults: [],
+    };
+  }
+  const {[ownProps.season]: season} = leagueResults;
   if(!season) {
     return {
       weekResults: [],

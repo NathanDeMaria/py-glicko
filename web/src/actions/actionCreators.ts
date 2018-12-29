@@ -1,15 +1,22 @@
 import { ThunkDispatch } from 'redux-thunk';
 
 import { Api } from 'src/api';
-import { IAppState, ITeamRating, ITeamRoundResult } from 'src/interfaces';
 import {
+  IAppState,
+  ITeamRating,
+  ITeamRoundResult,
+} from 'src/interfaces';
+import {
+  SUCCESS_GET_LEAGUES,
   SUCCESS_GET_SEASONS,
   SUCCESS_GET_TEAM_HISTORY,
+  SUCCESS_GET_TEAMS,
   SUCCESS_GET_WEEKLY_UPDATE,
 } from './actionTypes';
 
 export interface IWeeklyUpdateAction {
   payload: {
+    league: string,
     results: ITeamRoundResult[],
     round: number,
     season: number,
@@ -23,6 +30,7 @@ export const getWeeklyUpdate = (league: string, season: number, round: number) =
     (new Api()).getWeeklyUpdate(league, season, round)
       .then(results => dispatch({
         payload: {
+          league,
           results,
           round,
           season,
@@ -34,6 +42,7 @@ export const getWeeklyUpdate = (league: string, season: number, round: number) =
 
 export interface IWeekSelectorPayload {
   payload: {
+    league: string,
     seasons: {
       [key: number]: number[],
     },
@@ -46,6 +55,7 @@ export const getSeasons = (league: string) => {
     (new Api()).getSeasons(league)
       .then(seasons => dispatch({
         payload: {
+          league,
           seasons,
         },
         type: SUCCESS_GET_SEASONS,
@@ -62,6 +72,7 @@ export interface ITeamHistoryPayload {
   type: string,
 };
 
+// TODO: shouldGetTeamHistory??
 export const getTeamHistory = (league: string, team: string) => {
   return (dispatch: ThunkDispatch<IAppState, void, ITeamHistoryPayload>) => {
     (new Api()).getTeamHistory(league, team)
@@ -72,6 +83,46 @@ export const getTeamHistory = (league: string, team: string) => {
           team,
         },
         type: SUCCESS_GET_TEAM_HISTORY,
+      }));
+  };
+};
+
+export interface ILeaguesPayload {
+  payload: {
+    leagues: string[],
+  },
+  type: string,
+};
+
+export const getLeagues = () => {
+  return (dispatch: ThunkDispatch<IAppState, void, ILeaguesPayload>) => {
+    (new Api()).getLeagues()
+      .then(leagues => dispatch({
+        payload: {
+          leagues,
+        },
+        type: SUCCESS_GET_LEAGUES,
+      }));
+  }
+}
+
+export interface ITeamsPayload {
+  payload: {
+    league: string,
+    teams: string[],
+  },
+  type: string,
+}
+
+export const getTeams = (league: string) => {
+  return (dispatch: ThunkDispatch<IAppState, void, ITeamsPayload>) => {
+    (new Api()).getTeams(league)
+      .then(teams => dispatch({
+        payload: {
+          league,
+          teams,
+        },
+        type: SUCCESS_GET_TEAMS,
       }));
   };
 };

@@ -2,6 +2,8 @@ import * as React from 'react';
 
 import { IGameResult, ITeamRoundResult } from 'src/interfaces';
 
+import './style.css';
+
 
 export interface IOwnProps {
   league: string,
@@ -28,7 +30,8 @@ function renderRoundResult(teamRoundResult: ITeamRoundResult, i: number) {
     record += `-${teamRoundResult.ties}`;
   }
 
-  const ratingChange = teamRoundResult.rating - teamRoundResult.previousRating;
+  const ratingChange = (teamRoundResult.rating - teamRoundResult.previousRating);
+  const ratingChangeText = ratingChange === 0 ? '' : `(${ratingChange.toFixed(2)})`
 
   return (
     <tr key={i}>
@@ -36,7 +39,7 @@ function renderRoundResult(teamRoundResult: ITeamRoundResult, i: number) {
       <td>{teamRoundResult.team} ({record})</td>
       <td>{teamRoundResult.rating.toFixed(2)}</td>
       <td>{teamRoundResult.variance.toFixed(2)}</td>
-      <td>{rankChangeText} ({ratingChange.toFixed(2)})</td>
+      <td>{rankChangeText} {ratingChangeText}</td>
       <td>
         <ul>
           {teamRoundResult.gameResults.map(renderGame)}
@@ -62,7 +65,7 @@ export class WeeklyUpdate extends React.Component<Props, {}> {
     return (
       <div>
         <h1>{this.props.season} - {this.props.round}</h1>
-        <table>
+        <table className="comparison-table">
           <thead>
             <tr>
               <th>Rank</th>

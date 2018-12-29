@@ -4,12 +4,12 @@ import { bindActionCreators } from 'redux';
 import { getSeasons } from 'src/actions/actionCreators';
 import { IAppState } from 'src/interfaces';
 
-import { IStateProps, WeekSelector } from './WeekSelector';
+import { IOwnProps, IStateProps, WeekSelector } from './WeekSelector';
 
-const mapStateToProps = (state: IAppState): IStateProps => {
-  const {weekSelector} = state;
+const mapStateToProps = (state: IAppState, ownProps: IOwnProps): IStateProps => {
+  const {weekSelector: {[ownProps.league]: seasons}} = state;
   return {
-    seasons: weekSelector,
+    seasons,
   };
 };
    
