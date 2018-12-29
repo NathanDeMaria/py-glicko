@@ -1,26 +1,17 @@
 import * as React from 'react';
 
-import { ITeamRating } from 'src/interfaces';
-
 import HistoryChart from './HistoryChart';
 import TeamPicker from './TeamPicker';
 
-export interface IOwnProps {
+interface IProps {
   league: string,
   team: string,
 }
 
-export interface IStateProps {
-  history: ITeamRating[],
-};
- 
-type Props = IStateProps & IOwnProps
-
-export default class extends React.Component<Props, {}> {
+export default class extends React.Component<IProps, {}> {
   public render() {
     return (
       <div>
-        <h1>{this.props.team}</h1>
         <TeamPicker league={this.props.league} />
         <HistoryChart league={this.props.league} />
       </div>
