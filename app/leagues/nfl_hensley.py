@@ -16,7 +16,7 @@ def build_league(optimize: bool = False) -> League:
     get_score = hensley_cdf_builder(league)
     for g in league.games:
         g.set_score(get_score(g))
-    params = [10135.827483152862, 11418.89391604717]
+    params = [10135.827483152862, 11418.89418889558]
 
     def evaluate(x):
         # reset hack
