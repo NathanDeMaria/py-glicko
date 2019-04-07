@@ -5,10 +5,18 @@ from .team import Team
 
 
 class Game:
+    """
+    Parameters
+    ----------
+    neutral_site
+        True if the game was at a neutral site,
+        None if this data-set doesn't report/care
+    """
     __slots__ = (
         'team', 'opponent',
         'team_score', 'opponent_score',
         'season', 'round', 'date', '_score',
+        'neutral_site',
     )
 
     def __init__(self, team: Team,
@@ -18,7 +26,8 @@ class Game:
                  season: int,
                  round_num: int,
                  date: datetime,
-                 score: Optional[float] = None) -> None:
+                 score: Optional[float] = None,
+                 neutral_site: Optional[bool] = None) -> None:
         self.team = team
         self.opponent = opponent
         self.team_score = team_score
@@ -27,6 +36,7 @@ class Game:
         self.round = round_num
         self.date = date
         self._score = score
+        self.neutral_site = neutral_site
 
     @property
     def score(self) -> float:
@@ -49,5 +59,6 @@ class Game:
             season=self.season,
             round_num=self.round,
             date=self.date,
-            score=self._score
+            score=self._score,
+            neutral_site=self.neutral_site,
         )
