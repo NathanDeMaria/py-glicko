@@ -7,6 +7,7 @@ setup(
     packages=find_packages(),
     install_requires=[
         'numpy',
+        'python-dateutil',
     ],
     tests_require=[
         'pytest',

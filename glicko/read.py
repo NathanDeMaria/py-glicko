@@ -1,5 +1,6 @@
 from csv import DictReader
 from datetime import datetime
+from dateutil import parser
 
 from .league import League
 from .game import Game
@@ -34,10 +35,7 @@ def read_csv(csv_path: str) -> League:
         for row in rows:
             round_num = int(row.get('round') or row['week'])
             assert round_num > 0
-            try:
-                date = datetime.strptime(row['date'], '%Y-%m-%dT%H:%MZ')
-            except ValueError:
-                date = datetime.strptime(row['date'], '%Y-%m-%dT%H:%M:%SZ')
+            date = parser.parse(row['date'])
             games.append(Game(
                 team=team_lookup[row.get('home') or row['team']],
                 opponent=team_lookup[row.get('away') or row['opponent']],
