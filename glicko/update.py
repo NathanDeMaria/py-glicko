@@ -6,6 +6,7 @@ from .team import Rating
 
 
 Q = np.log(10) / 400
+EPSILON = 1e-16
 
 
 def _g(variance: np.ndarray) -> np.ndarray:
@@ -30,12 +31,15 @@ def update_rating(rating: Rating,
     expected_scores = 1 / (1 + 10 ** (-g_opp * mean_diff))
 
     game_sums = ((g_opp ** 2) * expected_scores * (1 - expected_scores)).sum()
-    delta_sq = 1 / ((Q ** 2) * game_sums)
+    # Plus epsilon to avoid div0
+    delta_sq = 1 / ((Q ** 2) * game_sums + EPSILON)
     updated_variance = 1 / (1 / team_variance + 1 / delta_sq)
     weighted_surprise = (g_opp * (scores - expected_scores)).sum()
     update_mean = team_mean + Q * updated_variance * weighted_surprise
 
     win_prob = calc_win_prob(rating, opponent_results[..., :2].T)
+    # To avoid log(0)
+    win_prob = np.maximum(np.minimum(win_prob, 1 - EPSILON), EPSILON)
     discrepancies = (-scores * np.log(win_prob)
                      - (1 - scores) * np.log(1 - win_prob))
 

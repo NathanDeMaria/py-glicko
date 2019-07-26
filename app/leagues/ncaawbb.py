@@ -1,6 +1,6 @@
 import os
 
-from glicko import LeagueBuilder, read_csv
+from glicko import LeagueBuilder, read_csv, Parameter
 
 
 CSV_PATH = os.path.join(
@@ -11,9 +11,20 @@ CSV_PATH = os.path.join(
 league = read_csv(CSV_PATH)
 builder = LeagueBuilder(
     league,
-    [54000., 30000.]
+    [
+        Parameter(
+            name='init_variance',
+            value=54000.,
+            bounds=[1.0, 1e5],
+        ),
+        Parameter(
+            name='variance_over_time',
+            value=30000.,
+            bounds=[1.0, 1e5]
+        )
+    ]
 )
 
 
 if __name__ == '__main__':
-    print(builder.optimize())
+    print(builder.optimize()[0])

@@ -1,7 +1,7 @@
 import os
 import pandas as pd
 
-from glicko import LeagueBuilder, read_csv
+from glicko import LeagueBuilder, read_csv, Parameter
 
 parent_dir = os.path.dirname(os.path.abspath(__file__))
 conferences_path = os.path.join(parent_dir, 'ncaaf_conferences.csv')
@@ -56,10 +56,21 @@ def create_offseason_runner(
 league = read_csv(CSV_PATH)
 builder = LeagueBuilder(
     league,
-    [132651.43369133995, 23133.307212227475, 578.8213423010113],
+        [
+        Parameter(
+            name='init_variance',
+            value=132651.43369133995,
+            bounds=[1.0, 1e5],
+        ),
+        Parameter(
+            name='variance_over_time',
+            value=578.8213423010113,
+            bounds=[1.0, 1e5]
+        )
+    ],
     offseason_runner_builder=create_offseason_runner,
 )
 
 
 if __name__ == '__main__':
-    print(builder.optimize())
+    print(builder.optimize()[0])
