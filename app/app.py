@@ -185,7 +185,7 @@ def find_leagues(league_dir: str = 'leagues') -> Dict[str, League]:
         fp = os.path.join(league_dir, league_file)
         league_name = league_file.split('.')[0]
         m = import_file('who cares?', fp)
-        teams = m.build_league()
+        teams = m.builder.get_league()
         all_teams[league_name] = teams
     return all_teams
 
