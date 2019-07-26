@@ -15,5 +15,5 @@ class League:
 
         if teams is None:
             # This might just be for easier tests?
-            teams = set(g.team for g in self.games)
-        self.teams = teams
+            teams = list(set(g.team for g in self.games))
+        self.teams: List[Team] = teams
