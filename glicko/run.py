@@ -1,7 +1,9 @@
 import numpy as np
 from collections import defaultdict
 from itertools import groupby
-from typing import Tuple, List, Iterator, NamedTuple, Callable
+from typing import (
+    DefaultDict, Tuple, List, Iterable, Iterator, NamedTuple, Callable
+)
 
 from .game import Game
 from .league import League
@@ -16,8 +18,8 @@ class TeamRound(NamedTuple):
     season: int
     round_num: int
     team: Team
-    round_games: Iterator[Game]
-    season_games: Iterator[Game]
+    round_games: Iterable[Game]
+    season_games: Iterable[Game]
 
     @property
     def rating_before(self) -> Rating:
@@ -65,7 +67,7 @@ class TeamRound(NamedTuple):
 
 class Season(NamedTuple):
     season: int
-    season_games: Iterator[Iterator[TeamRound]]
+    season_games: Iterable[Iterable[TeamRound]]
 
 
 def create_basic_offseason_runner(
@@ -93,18 +95,18 @@ def run_league(
     for t in league.teams:
         t.reset()
     games = _group_games(league.games)
-    discrepancy = 0
+    discrepancy = 0.0
     for season in games:
         run_offseason(league, season.season)
         discrepancy += run_season(season.season_games)
     return discrepancy, league.teams
 
 
-def run_season(games: Iterator[Iterator[TeamRound]]) -> float:
+def run_season(games: Iterable[Iterable[TeamRound]]) -> float:
     return sum(run_round(round_games) for round_games in games)
 
 
-def run_round(round_games: Iterator[TeamRound]) -> float:
+def run_round(round_games: Iterable[TeamRound]) -> float:
     return sum(run_team_round(team_games) for team_games in round_games)
 
 
@@ -140,17 +142,17 @@ def _group_games(games: List[Game]) -> Iterator[Season]:
     games = sorted(games, key=key)
 
     for season, season_games in groupby(games, lambda g: g.season):
-        season_game_lookup = defaultdict(list)
+        season_game_lookup: DefaultDict[Team, List[Game]] = defaultdict(list)
         season_rounds = []
         for round_num, round_games in groupby(season_games, lambda g: g.round):
             grouped_round = groupby(round_games, lambda g: g.team)
             team_rounds = []
             for team, team_games in grouped_round:
-                team_games = list(team_games)
-                season_game_lookup[team].extend(team_games)
+                team_games_l = list(team_games)
+                season_game_lookup[team].extend(team_games_l)
                 team_round = TeamRound(
                     season, round_num, team,
-                    team_games,
+                    team_games_l,
                     season_game_lookup[team].copy(),
                 )
                 team_rounds.append(team_round)

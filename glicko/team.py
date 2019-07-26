@@ -52,16 +52,18 @@ class Team:
     def __hash__(self) -> int:
         return hash(self.name)
 
-    def __eq__(self, other: Optional['Team']) -> bool:
+    def __eq__(self, other) -> bool:
         if other is None:
             return False
+        if not isinstance(other, Team):
+            return NotImplemented
         return self.name == other.name
 
     def __repr__(self) -> str:
         try:
             rating = self.rating
         except ValueError:
-            rating = None
+            return f'Team(name={self._name}, rating=NA)'
         return f'Team(name={self._name}, rating={rating})'
 
     def __str__(self) -> str:

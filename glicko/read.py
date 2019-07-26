@@ -1,6 +1,7 @@
 from csv import DictReader
 from datetime import datetime
 from dateutil import parser
+from typing import Dict
 
 from .league import League
 from .game import Game
@@ -23,7 +24,6 @@ def read_csv(csv_path: str) -> League:
     """
     with open(csv_path) as f:
         rows = list(DictReader(f))
-        games = []
 
         # Get all the teams
         team_names = set()
@@ -32,19 +32,23 @@ def read_csv(csv_path: str) -> League:
             team_names.add(row.get('away') or row['opponent'])
         team_lookup = {t: Team(t) for t in team_names}
 
-        for row in rows:
-            round_num = int(row.get('round') or row['week'])
-            assert round_num > 0
-            date = parser.parse(row['date'])
-            games.append(Game(
-                team=team_lookup[row.get('home') or row['team']],
-                opponent=team_lookup[row.get('away') or row['opponent']],
-                team_score=float(row.get('home_score') or row['score']),
-                opponent_score=float(row.get('away_score') or row['opponent_score']),
-                season=int(row['season']),
-                round_num=round_num,
-                date=date,
-                neutral_site=row.get('neutral_site')
-            ))
+        games = [_to_game(row, team_lookup) for row in rows]
 
     return League(games, list(team_lookup.values()))
+
+
+def _to_game(row: Dict, team_lookup: Dict[str, Team]):
+    round_num = int(row.get('round') or row['week'])
+    assert round_num > 0
+    date = parser.parse(row['date'])
+    neutral_site = row.get('neutral_site')
+    return Game(
+        team=team_lookup[row.get('home') or row['team']],
+        opponent=team_lookup[row.get('away') or row['opponent']],
+        team_score=float(row.get('home_score') or row['score']),
+        opponent_score=float(row.get('away_score') or row['opponent_score']),
+        season=int(row['season']),
+        round_num=round_num,
+        date=date,
+        neutral_site=None if neutral_site is None else bool(neutral_site),
+    )
