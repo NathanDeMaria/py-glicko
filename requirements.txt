@@ -1,2 +1,3 @@
-scipy==1.1.0
-numpy==1.14.5
+# TODO: save an env.yaml instead
+# This has a whole bunch of dependencies and doesn't just pip install on Windows
+ax-platform==0.1.3

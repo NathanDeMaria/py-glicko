@@ -16,3 +16,4 @@ python3env/
 # Datas
 data/
 *.csv
+*.json
