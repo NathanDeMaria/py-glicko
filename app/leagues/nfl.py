@@ -3,10 +3,10 @@ import os
 from glicko import LeagueBuilder, read_csv, Parameter
 
 
-CSV_PATH = os.path.join(
-    os.path.dirname(os.path.abspath(__file__)),
-    'nfl.csv'
-)
+LEAGUE_DIR = os.path.dirname(os.path.abspath(__file__))
+LEAGUE = 'nfl'
+CSV_PATH = os.path.join(LEAGUE_DIR, f'{LEAGUE}.csv')
+PARAM_PATH = os.path.join(LEAGUE_DIR, f'{LEAGUE}.json')
 
 league = read_csv(CSV_PATH)
 builder = LeagueBuilder(
@@ -24,7 +24,10 @@ builder = LeagueBuilder(
         )
     ]
 )
+if os.path.exists(PARAM_PATH):
+    builder.load_parameters(PARAM_PATH)
 
 
 if __name__ == '__main__':
     print(builder.optimize()[0])
+    builder.save_parameters(PARAM_PATH)

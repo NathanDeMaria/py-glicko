@@ -1,3 +1,4 @@
+import json
 import numpy as np
 from ax import optimize
 from typing import Callable, Dict, List, NamedTuple
@@ -26,12 +27,25 @@ class Parameter(NamedTuple):
             **d
         )
 
-    def to_dict(self) -> Dict:
+    def to_ax(self) -> Dict:
         return dict(
             name=self.name,
             type=self.param_type,
             bounds=self.bounds,
         )
+    
+    def to_dict(self) -> Dict:
+        return dict(
+            name=self.name,
+            type=self.param_type,
+            bounds=self.bounds,
+            value=self.value,
+        )
+    
+    @classmethod
+    def from_dict(cls, d: Dict) -> 'Parameter':
+        param_type = d.pop('type')
+        return cls(param_type=param_type, **d)
 
 
 class LeagueBuilder:
@@ -63,15 +77,26 @@ class LeagueBuilder:
             return run_league(self._league, run_offseason)[0]
 
         best_parameters, best_values, experiment, model = optimize(
-            parameters=[p.to_dict() for p in self._params.values()],
+            parameters=[p.to_ax() for p in self._params.values()],
             evaluation_function=evaluate,
-            minimize=True
+            minimize=True,
+            total_trials=50,
         )
         for name, best_value in best_parameters.items():
             self._params[name] = self._params[name].update_value(best_value)
-        self._params = best_parameters
         return best_parameters, best_values, experiment, model
     
+    def save_parameters(self, file_path: str):
+        params = [p.to_dict() for p in self._params.values()]
+        with open(file_path, 'w') as f:
+            json.dump(params, f)
+    
+    def load_parameters(self, file_path: str):
+        with open(file_path) as f:
+            l = json.load(f)
+        params = [Parameter.from_dict(d) for d in l]
+        self._params = {p.name: p for p in params}
+
     def get_league(self) -> League:
         run_offseason = self._offseason_runner_builder(**{
             name: p.value for name, p in self._params.items()
