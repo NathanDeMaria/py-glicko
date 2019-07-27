@@ -71,7 +71,10 @@ class LeagueBuilder:
             g.set_score(get_score(g))
         self._offseason_runner_builder = offseason_runner_builder
     
-    def optimize(self):
+    def optimize(self, **kwargs):
+        """
+        :param kwargs: kwargs for ax.optimize
+        """
         def evaluate(kwargs: Dict[str, float]):
             run_offseason = self._offseason_runner_builder(**kwargs)
             return run_league(self._league, run_offseason)[0]
@@ -80,7 +83,7 @@ class LeagueBuilder:
             parameters=[p.to_ax() for p in self._params.values()],
             evaluation_function=evaluate,
             minimize=True,
-            total_trials=50,
+            **kwargs,
         )
         for name, best_value in best_parameters.items():
             self._params[name] = self._params[name].update_value(best_value)
