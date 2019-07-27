@@ -1,7 +1,8 @@
+from collections import defaultdict
 from csv import DictReader
 from datetime import datetime
 from dateutil import parser
-from typing import Dict
+from typing import DefaultDict, Dict, List, Tuple
 
 from .league import League
 from .game import Game
@@ -34,6 +35,23 @@ def read_csv(csv_path: str) -> League:
 
         games = [_to_game(row, team_lookup) for row in rows]
 
+    return League(games, list(team_lookup.values()))
+
+
+def read_csvs(game_csv: str, team_csv: str) -> League:
+    """
+    CSV for games is formatted the same as for `read_csv`.
+    CSV for teams has 3 columns: team name, season, and "group"
+    """
+    with open(team_csv) as f:
+        teams: DefaultDict[str, List[Tuple[int, str]]] = defaultdict(list)
+        for row in DictReader(f):
+            teams[row['name']].append((int(row['season']), row['group']))
+    team_lookup = {
+        name: Team(name, dict(groups)) for name, groups in teams.items()
+    }
+    with open(game_csv) as f:
+        games = [_to_game(row, team_lookup) for row in DictReader(f)]
     return League(games, list(team_lookup.values()))
 
 
