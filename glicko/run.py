@@ -7,11 +7,9 @@ from typing import (
 
 from .game import Game
 from .league import League
+from .offseason import create_basic_offseason_runner, OffseasonRunner
 from .team import Team
 from .update import update_rating, Rating
-
-
-OffseasonRunner = Callable[[League, int], None]
 
 
 class TeamRound(NamedTuple):
@@ -68,24 +66,6 @@ class TeamRound(NamedTuple):
 class Season(NamedTuple):
     season: int
     season_games: Iterable[Iterable[TeamRound]]
-
-
-def create_basic_offseason_runner(
-        init_variance: float = 1000,
-        variance_over_time: float = 1000) -> OffseasonRunner:
-    def run_offseason(league: League, season: int) -> None:
-        for team in league.teams:
-            try:
-                mean, var = team.rating
-                team.update_rating(
-                    (mean, var + variance_over_time),
-                    season,
-                    0
-                )
-            except ValueError:
-                # i.e. this was the first season.
-                team.update_rating((1500, init_variance), season, 0)
-    return run_offseason
 
 
 def run_league(
