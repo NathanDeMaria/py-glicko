@@ -6,10 +6,11 @@ Time = Tuple[int, int]
 
 
 class Team:
-    def __init__(self, name: str) -> None:
+    def __init__(self, name: str, groups: Dict[int, str] = None) -> None:
         self._name = name
         self._ratings: Dict[int, Dict[int, Rating]] = {}
         self.games: Dict[int, List] = defaultdict(list)
+        self._groups = groups
 
     @property
     def name(self) -> str:
@@ -77,3 +78,12 @@ class Team:
         # TODO: maybe don't put gross logic in here instead?
         self.games = defaultdict(list)
         self._ratings: Dict[int, Dict[int, Rating]] = {}
+
+    def get_group(self, season: int) -> Optional[str]:
+        """
+        Look up the name of the group for a team in a particular season.
+        None if the team didn't play in that season
+        """
+        if self._groups is None:
+            return 'default'
+        return self._groups.get(season)
