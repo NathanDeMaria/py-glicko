@@ -3,7 +3,7 @@ from unittest import TestCase
 
 from .game import Game
 from .league import League
-from .offseason import create_grouped_offseason_runner
+from .offseason import create_grouped_offseason_runner, diffs_to_ratings
 from .team import Team
 
 
@@ -102,3 +102,13 @@ class TestOffseason(TestCase):
         RUN_OFFSEASON_GROUPED(league, 1)
         # Make sure teams[3] takes the average from teams[2]
         self.assertEqual(teams[3].rating[0], team_mean)
+
+    def test_diffs_to_ratings(self):
+        diffs = dict(
+            A_to_B=100,
+            B_to_C=200,
+            C_to_D=200,
+        )
+        ratings = diffs_to_ratings(diffs)
+
+        self.assertEqual(ratings, dict(A=1725, B=1625, C=1425, D=1225))
