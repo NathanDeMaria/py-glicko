@@ -16,4 +16,4 @@ environment:
 	conda activate ${NAME} && pip install -e .
 
 .DEFAULT: build
-	docker run -ti --rm ${NAME} $@
+	docker run --rm ${NAME} $@
