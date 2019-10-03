@@ -1,12 +1,19 @@
-IMAGE=pyglicko
+NAME=py-glicko
 
 build:
-	docker build -t ${IMAGE} .
+	docker build -t ${NAME} .
 
-run:
-	docker run -ti --rm ${IMAGE}
+run: build
+	docker run -ti --rm ${NAME}
 
-notebook:
+notebook: build
 	docker run -ti --rm \
 		-v ${PWD}/examples/://examples/ \
-		-p 8888:8888 ${IMAGE}
+		-p 8888:8888 ${NAME}
+
+environment:
+	conda env create -f environment.yaml -n ${NAME} || conda env update -f environment.yaml -n ${NAME}
+	conda activate ${NAME} && pip install -e .
+
+.DEFAULT: build
+	docker run -ti --rm ${NAME} $@

@@ -1,3 +1,4 @@
-web/
-notebooks/
-*.egg-info
+.mypy_cache/
+.pytest_cache/
+
+web/node_modules/

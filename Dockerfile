@@ -1,7 +1,7 @@
 FROM continuumio/miniconda3
 
-RUN conda install numpy scipy matplotlib pandas jupyter -y
-RUN pip install ax-platform
+COPY environment.yaml .
+RUN conda env update -f environment.yaml -n base
 
 COPY . .
 RUN pip install -e .
