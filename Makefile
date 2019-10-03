@@ -15,5 +15,5 @@ environment:
 	conda env create -f environment.yaml -n ${NAME} || conda env update -f environment.yaml -n ${NAME}
 	conda activate ${NAME} && pip install -e .
 
-.DEFAULT: build
-	docker run --rm ${NAME} $@
+test:
+	docker run --rm --entrypoint python ${NAME} setup.py test
