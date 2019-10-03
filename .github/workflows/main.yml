@@ -12,4 +12,4 @@ jobs:
     - name: Run docker tests
       run: |
         make build
-        make python setup.py test
+        make test
