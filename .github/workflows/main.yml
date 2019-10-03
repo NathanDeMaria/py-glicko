@@ -10,4 +10,6 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Run docker tests
-      run: make python setup.py test
+      run: |
+        make build
+        make python setup.py test
