@@ -35,6 +35,7 @@ class Game:
         self.season = season
         self.round = round_num
         self.date = date
+        _assert_score_is_valid(score)
         self._score = score
         self.neutral_site = neutral_site
 
@@ -45,6 +46,7 @@ class Game:
         return self._score
 
     def set_score(self, value: float):
+        _assert_score_is_valid(value)
         if self._score is not None:
             raise ValueError("Cannot set score twice")
         self._score = value
@@ -59,6 +61,14 @@ class Game:
             season=self.season,
             round_num=self.round,
             date=self.date,
-            score=self._score,
+            score=None if self._score is None else 1 - self._score,
             neutral_site=self.neutral_site,
         )
+
+
+def _assert_score_is_valid(score: Optional[float]):
+    if score is None:
+        return
+    if 0 <= score <= 1:
+        return
+    raise ValueError(f"Invalid score: {score}. Must be [0, 1]")
