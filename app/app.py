@@ -1,4 +1,5 @@
 import os
+import sys
 import importlib.util
 from collections import defaultdict
 from flask import Flask, jsonify
@@ -169,9 +170,9 @@ def get_teams(league_name: str):
 
 
 def import_file(full_name, path):
-    spec = importlib.util.spec_from_file_location(full_name, path)
+    spec = importlib.util.spec_from_file_location(full_name, path + '/__init__.py')
     mod = importlib.util.module_from_spec(spec)
-
+    sys.modules[spec.name] = mod
     spec.loader.exec_module(mod)
     return mod
 
@@ -180,11 +181,12 @@ def find_leagues(league_dir: str = 'leagues') -> Dict[str, League]:
     league_files = os.listdir(league_dir)
     all_teams = dict()
     for league_file in league_files:
-        if not league_file.endswith('.py'):
+        # TODO: revive other leagues
+        if league_file != 'ncaaf':
             continue
         fp = os.path.join(league_dir, league_file)
         league_name = league_file.split('.')[0]
-        m = import_file('who cares?', fp)
+        m = import_file('ncaaf', fp)
         teams = m.builder.get_league()
         all_teams[league_name] = teams
     return all_teams

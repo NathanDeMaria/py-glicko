@@ -1,2 +1,5 @@
 flask
-pyglicko
+flask-cors
+
+git+https://github.com/NathanDeMaria/EndGame.git#subdirectory=matcher
+git+https://github.com/NathanDeMaria/py-glicko.git
