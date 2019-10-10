@@ -12,7 +12,7 @@ class TestBetter(TestCase):
         # If a team has only one opponent in a season, don't break.
         a, b = Team('a'), Team('b')
         league = League([
-            Game(a, b, 1, 0, 1, 1, datetime.now()),
+            Game(a, b, 1, 0, 1, 1, datetime.now(), score=1),
         ])
         discrepancy, _ = run_league(league)
 
@@ -24,16 +24,16 @@ class TestBetter(TestCase):
         # even if your opponent gets that win after you play
         a, b, d = Team('a'), Team('b'), Team('d')
         league = League([
-            Game(a, b, 1, 0, 1, 2, datetime.now()),
-            Game(a, d, 1, 0, 1, 3, datetime.now()),
+            Game(a, b, 1, 0, 1, 2, datetime.now(), score=1),
+            Game(a, d, 1, 0, 1, 3, datetime.now(), score=1),
         ])
         run_league(league)
 
         a2, b2, c2, d2 = Team('a'), Team('b'), Team('c'), Team('d')
         league2 = League([
-            Game(a2, b2, 1, 0, 1, 1, datetime(1976, 3, 24)),
-            Game(b2, c2, 1, 0, 1, 2, datetime.now()),
-            Game(a2, d2, 1, 0, 1, 3, datetime.now()),
+            Game(a2, b2, 1, 0, 1, 1, datetime(1976, 3, 24), score=1),
+            Game(b2, c2, 1, 0, 1, 2, datetime.now(), score=1),
+            Game(a2, d2, 1, 0, 1, 3, datetime.now(), score=1),
         ])
         run_league(league2)
 
@@ -43,17 +43,17 @@ class TestBetter(TestCase):
         # if n_iterations is 1, no boost from opponents' opponents
         a, b, c = Team('a'), Team('b'), Team('c')
         league = League([
-            Game(a, b, 1, 0, 1, 1, datetime.now()),
-            Game(b, c, 1, 0, 1, 1, datetime.now()),
+            Game(a, b, 1, 0, 1, 1, datetime.now(), score=1),
+            Game(b, c, 1, 0, 1, 1, datetime.now(), score=1),
         ])
         run_league(league)
 
         a2, b2, c2, d2 = Team('a'), Team('b'), Team('c'), Team('d')
         league2 = League([
-            Game(a2, b2, 1, 0, 1, 1, datetime(1976, 3, 24)),
-            Game(b2, c2, 1, 0, 1, 1, datetime.now()),
+            Game(a2, b2, 1, 0, 1, 1, datetime(1976, 3, 24), score=1),
+            Game(b2, c2, 1, 0, 1, 1, datetime.now(), score=1),
             # B gets a boost, but that doesn't make it to A
-            Game(c2, d2, 1, 0, 1, 1, datetime.now()),
+            Game(c2, d2, 1, 0, 1, 1, datetime.now(), score=1),
         ])
         run_league(league2)
         self.assertEqual(a2.rating, a.rating)
@@ -63,14 +63,14 @@ class TestBetter(TestCase):
         # somebody with a big win next season
         a, b = Team('a'), Team('b')
         league = League([
-            Game(a, b, 1, 0, 1, 1, datetime.now()),
+            Game(a, b, 1, 0, 1, 1, datetime.now(), score=1),
         ])
         run_league(league)
 
         a2, b2, c2 = Team('a'), Team('b'), Team('c')
         league2 = League([
-            Game(a2, b2, 1, 0, 1, 1, datetime(1976, 3, 24)),
-            Game(b2, c2, 1, 0, 2, 1, datetime.now()),
+            Game(a2, b2, 1, 0, 1, 1, datetime(1976, 3, 24), score=1),
+            Game(b2, c2, 1, 0, 2, 1, datetime.now(), score=1),
         ])
         run_league(league2)
 
@@ -79,7 +79,7 @@ class TestBetter(TestCase):
     def test_better__first_season_is_not_one(self):
         a, b = Team('a'), Team('b')
         league = League([
-            Game(a, b, 1, 0, 1000, 1, datetime.now()),
+            Game(a, b, 1, 0, 1000, 1, datetime.now(), score=1),
         ])
         discrepancy, teams = run_league(league)
 
@@ -92,14 +92,14 @@ class TestBetter(TestCase):
         # for your rating on the week you play
         a, b = Team('a'), Team('b')
         league = League([
-            Game(a, b, 1, 0, season=1, round=1, date=datetime.now()),
+            Game(a, b, 1, 0, season=1, round_num=1, date=datetime.now(), score=1),
         ])
         run_league(league)
 
         a2, b2, c2 = Team('a'), Team('b'), Team('c')
         league2 = League([
-            Game(a2, b2, 1, 0, season=1, round=1, date=datetime(1976, 3, 24)),
-            Game(a2, c2, 1, 0, season=1, round=2, date=datetime.now()),
+            Game(a2, b2, 1, 0, season=1, round_num=1, date=datetime(1976, 3, 24), score=1),
+            Game(a2, c2, 1, 0, season=1, round_num=2, date=datetime.now(), score=1),
         ])
         run_league(league2)
 

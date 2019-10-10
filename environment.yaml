@@ -1,0 +1,11 @@
+dependencies:
+  - numpy
+  - pytorch::pytorch
+  - pytorch::torchvision
+  - pip
+  - pip:
+    - ax-platform
+    - matplotlib
+    - numpy
+    - python-dateutil
+    - sklearn
