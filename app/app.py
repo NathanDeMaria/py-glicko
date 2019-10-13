@@ -198,4 +198,4 @@ def _get_league(league_name: str) -> Optional[League]:
 
 if __name__ == '__main__':
     ALL_LEAGUES = find_leagues()
-    app.run()
+    app.run(host='0.0.0.0')
