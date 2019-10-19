@@ -170,7 +170,10 @@ def get_teams(league_name: str):
 
 
 def import_file(full_name, path):
-    spec = importlib.util.spec_from_file_location(full_name, path + '/__init__.py')
+    file_location = path
+    if not file_location.endswith('.py'):
+        file_location = os.path.join(file_location, '__init__.py')
+    spec = importlib.util.spec_from_file_location(full_name, file_location)
     mod = importlib.util.module_from_spec(spec)
     sys.modules[spec.name] = mod
     spec.loader.exec_module(mod)
@@ -182,11 +185,11 @@ def find_leagues(league_dir: str = 'leagues') -> Dict[str, League]:
     all_teams = dict()
     for league_file in league_files:
         # TODO: revive other leagues
-        if league_file != 'ncaaf':
+        if not any(league_file.startswith(n) for n in {'ncaaf', 'nfl'}):
             continue
         fp = os.path.join(league_dir, league_file)
         league_name = league_file.split('.')[0]
-        m = import_file('ncaaf', fp)
+        m = import_file(league_name, fp)
         teams = m.builder.get_league()
         all_teams[league_name] = teams
     return all_teams
