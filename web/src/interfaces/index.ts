@@ -58,6 +58,6 @@ export interface IAppState {
   weeklyUpdate: IWeeklyResult,
   weekSelector: ISeasons,
   teamHistory: ITeamHistories,
-  teamsPicker: ITeams,
+  leagueTeams: ITeams,
   leagueSelector: string[],
 };

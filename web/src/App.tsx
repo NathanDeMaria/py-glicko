@@ -3,6 +3,7 @@ import { BrowserRouter, Link, Route } from 'react-router-dom';
 
 import './App.css';
 import LeagueSelector from './containers/LeagueSelector/';
+import Matchup from './containers/Matchup/';
 import TeamHistory from './containers/TeamHistory/';
 import WeeklyUpdate from './containers/WeeklyUpdate/';
 import WeekSelector from './containers/WeekSelector/';
@@ -34,6 +35,13 @@ const t = (m: any) => (
   />
 );
 
+const wp = (m: any) => (
+  <Matchup
+    {...m.match.params}
+    key={m.match.params.league}
+  />
+);
+
 const menu = (m: any) => (
   <div key={m.match.params.league}>
     <Link to={`/${m.match.params.league}/history`}>
@@ -42,6 +50,10 @@ const menu = (m: any) => (
     <br />
     <Link to={`/${m.match.params.league}/weekly`}>
       Weekly
+    </Link>
+    <br />
+    <Link to={`/${m.match.params.league}/matchup`}>
+      Matchup
     </Link>
   </div>
 )
@@ -71,6 +83,10 @@ class App extends React.Component {
           <Route
             path="/:league/history"
             render={t}
+          />
+          <Route
+            path="/:league/matchup"
+            render={wp}
           />
         </div>
       </BrowserRouter>

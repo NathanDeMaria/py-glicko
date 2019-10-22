@@ -91,7 +91,7 @@ function leagueSelector(state: string[] = [], action: ILeaguesPayload): string[]
   };
 }
 
-function teamsPicker(state: ITeams = {}, action: ITeamsPayload): ITeams {
+function leagueTeams(state: ITeams = {}, action: ITeamsPayload): ITeams {
   switch(action.type) {
     case SUCCESS_GET_TEAMS:
       const { league, teams } = action.payload;
@@ -106,8 +106,8 @@ function teamsPicker(state: ITeams = {}, action: ITeamsPayload): ITeams {
 
 const reducer = combineReducers({
   leagueSelector,
+  leagueTeams,
   teamHistory,
-  teamsPicker,
   weekSelector,
   weeklyUpdate,
 });
