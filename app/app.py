@@ -6,16 +6,25 @@ from flask import Flask, jsonify
 from flask_cors import CORS
 from typing import Dict, Optional, Tuple, List
 
+# TODO: top level export these
 from glicko.game import Game
 from glicko.league import League
+from glicko.team import Team
+from glicko.update import calc_win_prob
 
 
 app = Flask(__name__)
 CORS(app)
 
 
-def get_league(league_name: str) -> League:
+def _get_league(league_name: str) -> League:
     return ALL_LEAGUES.get(league_name)
+
+
+def _get_team(team_name: str, league: League) -> Optional[Team]:
+    for t in league.teams:
+        if t.name.replace(' ', '') == team_name:
+            return t
 
 
 def build_season_lookup(league: League) -> Dict[int, List[int]]:
@@ -30,7 +39,7 @@ def build_season_lookup(league: League) -> Dict[int, List[int]]:
 
 @app.route('/<league_name>/seasons')
 def seasons(league_name: str):
-    league = get_league(league_name)
+    league = _get_league(league_name)
     if not league:
         return jsonify(), 404
     season_lookup = build_season_lookup(league)
@@ -86,7 +95,7 @@ class TeamRoundResult:
 
 @app.route('/<league_name>/ratings/<int:season>/<int:week>')
 def ratings(league_name: str, season: int, week: int):
-    league = get_league(league_name)
+    league = _get_league(league_name)
     if not league:
         return jsonify(), 404
     team_results = []
@@ -125,15 +134,10 @@ def ratings(league_name: str, season: int, week: int):
 
 @app.route('/<league_name>/team/<team_name>')
 def get_team_history(league_name: str, team_name: str):
-    league = get_league(league_name)
+    league = _get_league(league_name)
     if not league:
         return jsonify(), 404
-    team = None
-    # Maybe turn this into a lookup...
-    for t in league.teams:
-        if t.name.replace(' ', '') == team_name:
-            team = t
-            break
+    team = _get_team(team_name, league)
     if not team:
         return jsonify(), 404
 
@@ -154,6 +158,18 @@ def get_team_history(league_name: str, team_name: str):
     return jsonify(history)
 
 
+@app.route('/<league_name>/team1/<team1>/team2/<team2>')
+def get_win_probability(league_name: str, team1: str, team2: str):
+    league = _get_league(league_name)
+    if not league:
+        return jsonify(), 404
+    team1 = _get_team(team1, league)
+    team2 = _get_team(team2, league)
+    if team1 is None or team2 is None:
+        return jsonify(), 404
+    return jsonify(calc_win_prob(team1.rating, team2.rating))
+
+
 @app.route('/leagues')
 def get_leagues():
     return jsonify(list(ALL_LEAGUES.keys()))
@@ -161,7 +177,7 @@ def get_leagues():
 
 @app.route('/<league_name>/teams')
 def get_teams(league_name: str):
-    league = get_league(league_name)
+    league = _get_league(league_name)
     if not league:
         return jsonify(), 404
 
@@ -193,10 +209,6 @@ def find_leagues(league_dir: str = 'leagues') -> Dict[str, League]:
         teams = m.builder.get_league()
         all_teams[league_name] = teams
     return all_teams
-
-
-def _get_league(league_name: str) -> Optional[League]:
-    return ALL_LEAGUES.get(league_name)
 
 
 if __name__ == '__main__':
