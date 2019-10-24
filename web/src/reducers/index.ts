@@ -2,6 +2,7 @@ import { combineReducers } from 'redux';
 
 import {
   ILeaguesPayload,
+  IMatchupPayload,
   ITeamHistoryPayload,
   ITeamsPayload,
   IWeeklyUpdateAction,
@@ -13,8 +14,10 @@ import {
   SUCCESS_GET_TEAM_HISTORY,
   SUCCESS_GET_TEAMS,
   SUCCESS_GET_WEEKLY_UPDATE,
+  SUCCESS_GET_WIN_PROBABILITY,
 } from 'src/actions/actionTypes';
 import {
+  IMatchups,
   ISeasons,
   ITeamHistories,
   ITeams,
@@ -104,9 +107,37 @@ function leagueTeams(state: ITeams = {}, action: ITeamsPayload): ITeams {
   }
 }
 
+function matchup(state: IMatchups = {}, action: IMatchupPayload): IMatchups {
+  switch(action.type) {
+    case SUCCESS_GET_WIN_PROBABILITY:
+      const {
+        league,
+        team1,
+        team2,
+        winProbability,
+      } = action.payload;
+      const otherMatchups = state[league] && state[league][team1];
+      return {
+        ...state,
+        [league]: {
+          ...state[league],
+          [team1]: {
+            ...otherMatchups,
+            [team2]: {
+              winProbability,
+            },
+          },
+        },
+      };
+    default:
+      return state;
+  }
+}
+
 const reducer = combineReducers({
   leagueSelector,
   leagueTeams,
+  matchup,
   teamHistory,
   weekSelector,
   weeklyUpdate,

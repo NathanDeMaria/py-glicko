@@ -23,13 +23,28 @@ interface IOption {
   label: string,
 }
 
+interface IComponentState {
+  team1: string | null,
+  team2: string | null,
+}
 
-export default class extends React.Component<Props, {}> {
+interface ISelectedTeams {
+  team1: string,
+  team2: string,
+}
+
+export default class extends React.Component<Props, IComponentState> {
+  public state = {
+    team1: null,
+    team2: null,
+  }
+
   public componentDidMount() {
     this.props.getTeams();
   }
 
   public render() {
+    console.log(this.teamsAreSelected());
     return (
       <div>
         <Select
@@ -46,9 +61,12 @@ export default class extends React.Component<Props, {}> {
           }))}
           onChange={this.handleTeam2Change}
         />
-        {/* <button onClick={this.getMatchup}>
-          GET MATCHUP
-        </button> */}
+        { this.teamsAreSelected() ? 
+          <button onClick={this.getMatchup}>
+            GET MATCHUP
+          </button>
+          : null
+        }
       </div>
     );
   }
@@ -61,7 +79,21 @@ export default class extends React.Component<Props, {}> {
     this.setState({team2: selected.value});
   }
 
-//   private getMatchup = () => {
-//     this.props.getMatchup(this.props.team1, this.state.team2);
-//   }
+  private getMatchup = () => {
+    const selected = this.teamsAreSelected();
+    if (selected) {
+      const { team1, team2 } = selected;
+      this.props.getMatchup(team1, team2);
+    }
+  }
+
+  private teamsAreSelected = (): ISelectedTeams | null => {
+    if (this.state.team1 !== null && this.state.team2 !== null) {
+      return {
+        team1: this.state.team1!,
+        team2: this.state.team2!,
+      }
+    }
+    return null;
+  }
 }

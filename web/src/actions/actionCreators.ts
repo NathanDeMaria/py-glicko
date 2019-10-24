@@ -12,6 +12,7 @@ import {
   SUCCESS_GET_TEAM_HISTORY,
   SUCCESS_GET_TEAMS,
   SUCCESS_GET_WEEKLY_UPDATE,
+  SUCCESS_GET_WIN_PROBABILITY,
 } from './actionTypes';
 
 export interface IWeeklyUpdateAction {
@@ -116,6 +117,7 @@ export interface ITeamsPayload {
 
 export const getTeams = (league: string) => {
   return (dispatch: ThunkDispatch<IAppState, void, ITeamsPayload>) => {
+    // TODO: don't re-get if it's already in there
     (new Api()).getTeams(league)
       .then(teams => dispatch({
         payload: {
@@ -126,3 +128,28 @@ export const getTeams = (league: string) => {
       }));
   };
 };
+
+export interface IMatchupPayload {
+  payload : {
+    league: string,
+    team1: string,
+    team2: string,
+    winProbability: number,
+  },
+  type: string,
+}
+
+export const getMatchup = (league: string, team1: string, team2: string) => {
+  return (dispatch: ThunkDispatch<IAppState, void, IMatchupPayload>) => {
+    (new Api()).getWinProbability(league, team1, team2)
+      .then(winProbability => dispatch({
+        payload: {
+          league,
+          team1,
+          team2,
+          winProbability,
+        },
+        type: SUCCESS_GET_WIN_PROBABILITY,
+      }))
+  }
+}
