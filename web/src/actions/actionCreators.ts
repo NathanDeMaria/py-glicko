@@ -141,7 +141,7 @@ export interface IMatchupPayload {
 
 export const getMatchup = (league: string, team1: string, team2: string) => {
   return (dispatch: ThunkDispatch<IAppState, void, IMatchupPayload>) => {
-    (new Api()).getWinProbability(league, team1, team2)
+    (new Api()).getWinProbability(league, team1.replace(/\s/g, ''), team2.replace(/\s/g, ''))
       .then(winProbability => dispatch({
         payload: {
           league,

@@ -17,8 +17,8 @@ import {
   SUCCESS_GET_WIN_PROBABILITY,
 } from 'src/actions/actionTypes';
 import {
-  IMatchups,
   ISeasons,
+  ISelectedMatchup,
   ITeamHistories,
   ITeams,
   IWeeklyResult,
@@ -107,7 +107,7 @@ function leagueTeams(state: ITeams = {}, action: ITeamsPayload): ITeams {
   }
 }
 
-function matchup(state: IMatchups = {}, action: IMatchupPayload): IMatchups {
+function matchup(state: ISelectedMatchup | null = null, action: IMatchupPayload): ISelectedMatchup | null {
   switch(action.type) {
     case SUCCESS_GET_WIN_PROBABILITY:
       const {
@@ -116,18 +116,13 @@ function matchup(state: IMatchups = {}, action: IMatchupPayload): IMatchups {
         team2,
         winProbability,
       } = action.payload;
-      const otherMatchups = state[league] && state[league][team1];
       return {
-        ...state,
-        [league]: {
-          ...state[league],
-          [team1]: {
-            ...otherMatchups,
-            [team2]: {
-              winProbability,
-            },
-          },
+        league,
+        matchup: {
+          winProbability,
         },
+        team1,
+        team2,
       };
     default:
       return state;

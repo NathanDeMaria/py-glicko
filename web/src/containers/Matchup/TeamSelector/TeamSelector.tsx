@@ -44,20 +44,19 @@ export default class extends React.Component<Props, IComponentState> {
   }
 
   public render() {
-    console.log(this.teamsAreSelected());
     return (
       <div>
         <Select
           options={this.props.teams.map(t => ({
             label: t,
-            value: t.replace(/\s/g, ''),
+            value: t,
           }))}
           onChange={this.handleTeam1Change}
         />
         <Select
           options={this.props.teams.map(t => ({
             label: t,
-            value: t.replace(/\s/g, ''),
+            value: t,
           }))}
           onChange={this.handleTeam2Change}
         />

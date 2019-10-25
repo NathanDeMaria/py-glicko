@@ -57,13 +57,11 @@ export interface IMatchup {
   winProbability: number,
 }
 
-export interface IMatchups {
-  // d[league][team1][team2]
-  [key: string]: {
-    [key: string]: {
-      [key: string]: IMatchup,
-    }
-  }
+export interface ISelectedMatchup {
+  league: string,
+  team1: string,
+  team2: string,
+  matchup: IMatchup,
 }
 
 export interface IAppState {
@@ -73,5 +71,5 @@ export interface IAppState {
   teamHistory: ITeamHistories,
   leagueTeams: ITeams,
   leagueSelector: string[],
-  matchups: IMatchups,
+  matchup: ISelectedMatchup,
 };

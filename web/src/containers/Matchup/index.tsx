@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-// import MatchupDisplay from './MatchupDisplay';
+import MatchupDisplay from './MatchupDisplay';
 import TeamSelector from './TeamSelector';
 
 interface IProps {
@@ -12,7 +12,7 @@ export default class extends React.Component<IProps, {}> {
     return (
       <div>
         <TeamSelector league={this.props.league} />
-        {/* <MatchupDisplay league={this.props.league} /> */}
+        <MatchupDisplay />
       </div>
     );
   }
