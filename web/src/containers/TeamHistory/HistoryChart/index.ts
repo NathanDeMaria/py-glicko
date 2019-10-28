@@ -14,4 +14,4 @@ const mapStateToProps = (state: IAppState, ownProps: IOwnProps): IStateProps => 
   };
 };
 
-export default connect(mapStateToProps)(HistoryChart as any); // TODO: typescript better
+export default connect(mapStateToProps)(HistoryChart);

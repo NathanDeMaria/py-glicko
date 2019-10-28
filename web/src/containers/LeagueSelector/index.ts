@@ -17,4 +17,4 @@ const mapDispatchToProps = (dispatch: any) => bindActionCreators({
   getLeagues,
 }, dispatch);
 
-export default connect(mapStateToProps, mapDispatchToProps)(LeagueSelector as any); // TODO: typescript better
+export default connect(mapStateToProps, mapDispatchToProps)(LeagueSelector);

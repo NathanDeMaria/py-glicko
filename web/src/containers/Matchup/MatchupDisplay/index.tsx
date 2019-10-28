@@ -21,4 +21,4 @@ const mapStateToProps = (state: IAppState): IStateProps => {
     }
 };
 
-export default connect(mapStateToProps)(MatchupDisplay as any); // TODO: typescript better
+export default connect(mapStateToProps)(MatchupDisplay);

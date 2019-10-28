@@ -17,4 +17,4 @@ const mapDispatchToProps = (dispatch: any, ownProps: IOwnProps) => ({
   getTeams: () => dispatch(getTeams(ownProps.league)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(TeamPicker as any); // TODO: typescript better
+export default connect(mapStateToProps, mapDispatchToProps)(TeamPicker);

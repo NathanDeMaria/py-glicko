@@ -17,4 +17,4 @@ const mapDispatchToProps = (dispatch: any) => bindActionCreators({
   getSeasons,
 }, dispatch);
 
-export default connect(mapStateToProps, mapDispatchToProps)(WeekSelector as any); // TODO: typescript better
+export default connect(mapStateToProps, mapDispatchToProps)(WeekSelector);

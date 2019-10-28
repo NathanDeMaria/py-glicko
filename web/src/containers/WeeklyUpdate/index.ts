@@ -30,4 +30,4 @@ const mapDispatchToProps = (dispatch: any, ownProps: IOwnProps) => bindActionCre
   getWeeklyUpdate,
 }, dispatch);
 
-export default connect(mapStateToProps, mapDispatchToProps)(WeeklyUpdate as any); // TODO: typescript better
+export default connect(mapStateToProps, mapDispatchToProps)(WeeklyUpdate);
