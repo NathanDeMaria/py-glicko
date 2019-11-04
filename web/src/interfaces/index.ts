@@ -53,11 +53,23 @@ export interface ITeamHistories {
   }
 };
 
+export interface IMatchup {
+  winProbability: number,
+}
+
+export interface ISelectedMatchup {
+  league: string,
+  team1: string,
+  team2: string,
+  matchup: IMatchup,
+}
+
 export interface IAppState {
   // has to match reducer name...for now
   weeklyUpdate: IWeeklyResult,
   weekSelector: ISeasons,
   teamHistory: ITeamHistories,
-  teamsPicker: ITeams,
+  leagueTeams: ITeams,
   leagueSelector: string[],
+  matchup: ISelectedMatchup,
 };

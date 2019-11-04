@@ -28,6 +28,10 @@ export class Api {
     return await this.get<string[]>(`${league}/teams`);
   }
 
+  public async getWinProbability(league: string, team1: string, team2: string): Promise<number> {
+    return await this.get<number>(`${league}/team1/${team1}/team2/${team2}`);
+  }
+
   private async get<T>(path: string): Promise<T> {
     const response = await fetch(`${API_ROOT}/${path}`);
     if (!response.ok) {

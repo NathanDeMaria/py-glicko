@@ -1,8 +1,9 @@
 import { connect } from 'react-redux';
 
-import { getTeamHistory, getTeams } from 'src/actions/actionCreators';
+import { getMatchup, getTeams } from 'src/actions/actionCreators';
 import { IAppState } from 'src/interfaces';
-import TeamPicker, { IOwnProps, IStateProps } from './TeamPicker';
+
+import { default as TeamSelector, IOwnProps, IStateProps} from './TeamSelector';
 
 const mapStateToProps = (state: IAppState, ownProps: IOwnProps): IStateProps => {
   const { league } = ownProps;
@@ -11,10 +12,10 @@ const mapStateToProps = (state: IAppState, ownProps: IOwnProps): IStateProps => 
     teams,
   };
 };
-
+   
 const mapDispatchToProps = (dispatch: any, ownProps: IOwnProps) => ({
-  getTeamHistory: (team: string) => dispatch(getTeamHistory(ownProps.league, team)),
+  getMatchup: (team1: string, team2: string) => dispatch(getMatchup(ownProps.league, team1, team2)),
   getTeams: () => dispatch(getTeams(ownProps.league)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(TeamPicker);
+export default connect(mapStateToProps, mapDispatchToProps)(TeamSelector);
