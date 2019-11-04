@@ -8,7 +8,16 @@ import { IOwnProps, IStateProps, WeekSelector } from './WeekSelector';
 
 const mapStateToProps = (state: IAppState, ownProps: IOwnProps): IStateProps => {
   const {weekSelector: {[ownProps.league]: seasons}} = state;
+  if (seasons == null) {
+    return {
+      defaultWeeks: [],
+      seasons,
+    };
+  }
+  const lastSeason = Math.max(...Object.keys(seasons).map(s => parseInt(s, 10)));
+  const defaultWeeks = seasons[lastSeason.toString()];
   return {
+    defaultWeeks,
     seasons,
   };
 };

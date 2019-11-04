@@ -1,9 +1,8 @@
 import * as React from "react";
 
-import Menu, { MenuItem, SubMenu } from 'rc-menu';
 import { Link } from 'react-router-dom';
 
-import 'rc-menu/assets/index.css';
+import { ChangeEvent } from 'react';
 
 
 export interface IOwnProps {
@@ -11,6 +10,7 @@ export interface IOwnProps {
 };
 
 export interface IStateProps {
+  defaultWeeks: number[],
   seasons: {
     [key: number]: number[],
   },
@@ -22,44 +22,65 @@ interface IDispatchProps {
  
 type Props = IStateProps & IDispatchProps & IOwnProps;
 
-
-function compareInt(a: string, b: string): number {
-  const intA = parseInt(a, 10);
-  const intB = parseInt(b, 10);
-  return intA - intB;
+interface IComponentState {
+  selectedSeason: string | null,
 }
 
 
-export class WeekSelector extends React.Component<Props, {}> {
+export class WeekSelector extends React.Component<Props, IComponentState> {
+  public state = {
+    selectedSeason: null,
+  }
+
   public componentDidMount() {
     this.props.getSeasons(this.props.league);
   }
 
   public render() {
     if (!this.props.seasons) { return null };
+    const seasons = Object.keys(this.props.seasons);
     return (
-      <Menu style={{width: 200}}>
-        <SubMenu title="Pick Round">
-        {Object.keys(this.props.seasons)
-          .sort(compareInt).reverse()
-          .map(s => (
-          <SubMenu title={s} key={s}>
-            {this.props.seasons[s]
-              .sort(compareInt).reverse()
-              .map((week: number) => (
-              <MenuItem key={week}>
-                <Link
-                  style={{color: "black", textDecoration: "none"}}
-                  to={`/${this.props.league}/weekly/season/${s}/round/${week}`}
-                >
-                  {week}
-                </Link>
-              </MenuItem>
-            ))}
-          </SubMenu>
-        ))}
-        </SubMenu>
-      </Menu>
+      <div style={{padding: "20px"}}>
+        {this.renderSeasonList()}
+        <select
+          style={{display: "inline"}}
+          onChange={this.handleChanged}
+          defaultValue={this.getDefaultSeason()}
+        >
+          {seasons.map(s => (
+            <option value={s}>{s}</option>
+          ))}
+        </select>
+      </div>
     );
+  }
+
+  private handleChanged = (e: ChangeEvent<HTMLSelectElement>) => {
+    const selectedSeason = e.currentTarget.value;
+    this.setState({selectedSeason});
+  }
+
+  private renderSeasonList() {
+    const season = this.state.selectedSeason || this.getDefaultSeason();
+    const currentSeason = season == null ? this.props.defaultWeeks : this.props.seasons[season];
+    return (
+      <ul style={{display: "inline"}}>
+        {currentSeason.map(w => (
+          <li style={{display: "inline", padding: "5px"}}>
+            <Link
+              style={{color: "black", textDecoration: "none"}}
+              to={`/${this.props.league}/weekly/season/${season}/round/${w}`}
+            >
+              {w}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    )
+  }
+
+  private getDefaultSeason(): number {
+    const seasons = Object.keys(this.props.seasons).map(s => parseInt(s, 10));
+    return Math.max(...seasons);
   }
 }
