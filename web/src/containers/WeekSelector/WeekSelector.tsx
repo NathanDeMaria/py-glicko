@@ -45,7 +45,7 @@ export class WeekSelector extends React.Component<Props, IComponentState> {
         <select
           style={{display: "inline"}}
           onChange={this.handleChanged}
-          defaultValue={this.getDefaultSeason()}
+          defaultValue={this.getDefaultSeason().toString()}
         >
           {seasons.map(s => (
             <option value={s}>{s}</option>
