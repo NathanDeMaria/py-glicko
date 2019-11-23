@@ -1,0 +1,21 @@
+.week-selector-panel {
+    padding: 20px;
+}
+
+.week-selector-panel > select {
+    display: inline;
+}
+
+.weeks-list {
+    display: inline;
+}
+
+.weeks-list > li {
+    display: inline;
+    padding: 5px;
+}
+
+.weeks-list > li > a {
+    color: black;
+    text-decoration: none;
+}

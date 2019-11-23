@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 
 import { ChangeEvent } from 'react';
 
+import './style.css';
 
 export interface IOwnProps {
   league: string,
@@ -40,15 +41,14 @@ export class WeekSelector extends React.Component<Props, IComponentState> {
     if (!this.props.seasons) { return null };
     const seasons = Object.keys(this.props.seasons);
     return (
-      <div style={{padding: "20px"}}>
+      <div className="week-selector-panel">
         {this.renderSeasonList()}
         <select
-          style={{display: "inline"}}
           onChange={this.handleChanged}
           defaultValue={this.getDefaultSeason().toString()}
         >
           {seasons.map(s => (
-            <option value={s}>{s}</option>
+            <option key={s} value={s}>{s}</option>
           ))}
         </select>
       </div>
@@ -64,11 +64,10 @@ export class WeekSelector extends React.Component<Props, IComponentState> {
     const season = this.state.selectedSeason || this.getDefaultSeason();
     const currentSeason = season == null ? this.props.defaultWeeks : this.props.seasons[season];
     return (
-      <ul style={{display: "inline"}}>
+      <ul className="weeks-list">
         {currentSeason.map(w => (
-          <li style={{display: "inline", padding: "5px"}}>
+          <li key={w}>
             <Link
-              style={{color: "black", textDecoration: "none"}}
               to={`/${this.props.league}/weekly/season/${season}/round/${w}`}
             >
               {w}
