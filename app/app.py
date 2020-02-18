@@ -200,8 +200,7 @@ def find_leagues(league_dir: str = 'leagues') -> Dict[str, League]:
     league_files = os.listdir(league_dir)
     all_teams = dict()
     for league_file in league_files:
-        # TODO: revive other leagues
-        if not any(league_file.startswith(n) for n in {'ncaaf', 'nfl'}):
+        if not any(league_file.startswith(n) for n in {'ncaaf', 'nfl', 'ncaambb', 'ncaawbb'}):
             continue
         fp = os.path.join(league_dir, league_file)
         league_name = league_file.split('.')[0]
