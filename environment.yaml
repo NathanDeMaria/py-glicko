@@ -3,6 +3,7 @@ dependencies:
   - pytorch::pytorch
   - pytorch::torchvision
   - pip
+  - jupyter
   - pip:
     - ax-platform
     - matplotlib
