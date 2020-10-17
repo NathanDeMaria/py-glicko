@@ -1,7 +1,7 @@
 import os
 
 from glicko import LeagueBuilder, read_csv, Parameter
-
+from glicko.score import scaled_mov_builder
 
 LEAGUE_DIR = os.path.dirname(os.path.abspath(__file__))
 LEAGUE = 'ncaambb'
@@ -15,14 +15,15 @@ builder = LeagueBuilder(
         Parameter(
             name='init_variance',
             value=65989.90748891704,
-            bounds=[1.0, 1e5],
+            bounds=[1.0, 1e6],
         ),
         Parameter(
             name='variance_over_time',
             value=13820.647006211871,
-            bounds=[1.0, 1e5]
+            bounds=[1.0, 1e6]
         )
-    ]
+    ],
+    score_function_builder=scaled_mov_builder,
 )
 if os.path.exists(PARAMS_FILE):
     builder.load_parameters(PARAMS_FILE)

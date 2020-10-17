@@ -48,3 +48,23 @@ def hensley_cdf_builder(league: League) -> ScoreFunction:
         return dist.cdf(h)
 
     return score
+
+
+def _scaled_mov(game: Game) -> float:
+    # Inspired by fivethirtyeight's method for scaling margin of victory
+    # https://fivethirtyeight.com/methodology/how-our-nfl-predictions-work/
+    mov = game.team_score - game.opponent_score
+    return np.sign(mov) * np.log(np.abs(mov) + 1) * 2.2 / (np.abs(mov) * .001 + 2.2)
+
+
+def scaled_mov_builder(league: League) -> ScoreFunction:
+    scaled_movs = [_scaled_mov(g) for g in league.games]
+    min_mov, max_mov = min(scaled_movs), max(scaled_movs)
+    # Assert that they're opposites, but leave room for rounding errors
+    assert np.abs(min_mov + max_mov) < 1e-3
+
+    def score(game: Game) -> float:
+        s = _scaled_mov(game)
+        return (s - min_mov) / (max_mov - min_mov)
+    
+    return score
