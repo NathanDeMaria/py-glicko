@@ -1,3 +1,4 @@
+from glicko.brier import calc_brier_score
 import json
 import numpy as np
 from ax import optimize
@@ -77,7 +78,8 @@ class LeagueBuilder:
         """
         def evaluate(kwargs: Dict[str, float]):
             run_offseason = self._offseason_runner_builder(**kwargs)
-            return run_league(self._league, run_offseason)[0]
+            run_league(self._league, run_offseason)
+            return calc_brier_score(self._league)
 
         best_parameters, best_values, experiment, model = optimize(
             parameters=[p.to_ax() for p in self._params.values()],
